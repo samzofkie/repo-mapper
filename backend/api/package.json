@@ -1,0 +1,15 @@
+{
+  "name": "repo-mapper-backend",
+  "version": "1.0.0",
+  "description": "The backend to a tool for visualizing a code repository.",
+  "main": "api.js",
+  "type": "module",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "Sam Zofkie",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.1"
+  }
+}

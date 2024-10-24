@@ -1,0 +1,81 @@
+html {
+  --gray-0: hsl(240 40% 4%);
+  --gray-1: hsl(240 20% 8%);
+  --gray-2: hsl(240 14% 12%);
+  --gray-3: hsl(240 14% 16%);
+  --gray-4: hsl(240 13% 18%);
+  --gray-5: hsl(240 13% 35%);
+  --gray-6: hsl(240 10% 44%);
+  --gray-7: hsl(240 15% 70%);
+  --gray-8: hsl(240 10% 82%);
+  --gray-9: hsl(246 80% 96%);
+
+  --padding-0: 10px;
+  --padding-1: 20px;
+  
+  --radius-0: 10px;
+  --radius-1: 30px;
+
+  --accent-0: hsl(230 100% 78.2%);
+  --accent-1: hsl(275 100% 76.6%);
+
+  --size-0: 12px;
+  --size-1: 14px;
+  --size-2: 16px;
+  --size-3: 18px;
+  --size-4: 20px;
+  --size-5: 24px;
+  --size-6: 30px;
+  --size-7: 36px;
+  --size-8: 48px;
+  --size-9: 60px;
+  --size-10: 72px;
+}
+
+body {
+  background-color: var(--gray-0);
+  color: var(--gray-7);
+
+  font-family: "Inter", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+main {
+  /*position: relative;*/
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  gap: 5px;
+  justify-content: space-evenly;
+}
+
+.dirent-card {
+  background-color: var(--gray-3);
+  color: var(--gray-8);
+  border-radius: 50%;
+  
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+
+  overflow: hidden;
+  user-select: none;
+}
+
+.dotdot {
+  background-color: hsl(64, 56%, 47%);
+  color: var(--gray-1);
+  border-radius: 50%;
+
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+
+  height: 50px;
+  width: 50px;
+  font-size: 40px;
+
+  user-select: none;
+}
