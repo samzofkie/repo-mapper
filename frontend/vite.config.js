@@ -6,5 +6,8 @@ export default defineConfig({
     proxy: {
       '/data': 'http://api:8080',
 		}, 
+    cors: {
+      origin: false,
+    }
   },
 });

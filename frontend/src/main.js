@@ -1,15 +1,16 @@
-const globalState = {
-  cards: [],
+import { customAlphabet } from 'nanoid';
+const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz', 21);
+
+let globalState = {
+  tree: null,
   stack: [],
+  cards: [],
+  symbols: {},
 };
 
-async function getData() {
-  const res = await fetch('/data');
-  return await res.json();
-}
 
-function createCard(dirEnt) {
-  const size = dirEnt[1].size;
+function createCard(name, subtree) {  
+  const size = 10000; //dirEnt[1].size;
   const scaledSize = Math.log2(size) ** 1.88 / 6 + 5;
 
   const card = document.createElement('div');
@@ -17,37 +18,51 @@ function createCard(dirEnt) {
   card.style.fontSize = `${scaledSize / 2}px`;
   card.style.height = `${scaledSize * 4}px`;
   card.style.width = `${scaledSize * 4}px`;
-  if (dirEnt[1].entries !== undefined) {
+
+  const typeSym = globalState.symbols.type;
+  if (subtree[typeSym] === 'tree') {
     card.style.color = 'hsl(219 100% 50%)';
     card.style.backgroundColor = 'hsl(250 90% 80%)';
-    card.onclick = async () => {
+    /*card.onclick = async () => {
   
       globalState.stack.push(globalState.current);
       globalState.current = dirEnt[1].entries;
       clearCards();
       drawRepo();
-    };
+    };*/
   }
-  card.innerText = dirEnt[0];
+
+  card.innerText = name;
   return card;
 }
 
+
 function clearCards() {
-  while (globalState.cards.length) {
+  while (globalState.cards.length)
     globalState.cards.pop().remove();
-  }
-  console.log(globalState.cards.length);
 }
 
-async function drawRepo() {
-  const repo = globalState.current;
+
+async function drawCurrentState() {
   const main = document.body.children[0];
+
+  const currentState = globalState.stack[globalState.stack.length-1];
+  const entries = Object.entries(currentState);
+  // TODO: sort entries properly
+
+  globalState.cards = entries.map( ([k, v]) => createCard(k, v));
+  globalState.cards.map(card => main.append(card));
+
   
   /*const sortedDirEnts = Object.entries(repoData)
     .toSorted(([_, aData], [__, bData]) => aData.size - bData.size);*/
 
 
-  globalState.cards = Object.entries(repo).map(createCard);
+  /*globalState.cards = Object.entries(repo)
+    //toSorted(([nameA, dataA], [nameB, dataB]) => {
+        //if (nameA)
+    //
+    .map(createCard);
 
   if (globalState.stack.length) {
     let dotdot = document.createElement('div');
@@ -61,21 +76,71 @@ async function drawRepo() {
     globalState.cards = [dotdot, ...globalState.cards];
   }
 
-  globalState.cards.forEach(card => main.append(card));
+  globalState.cards.forEach(card => main.append(card));*/
 
 
-  // Bin packin'
-  
-  /*
-  const cardSizes = cards.map(card => Number(card.style.height.split('px')[0]));
-  const total = cardSizes.reduce((acc, curr) => acc + curr, 0);
-
-  */
+  // TODO: bin packin'
 }
 
 
-(async () => {
-  globalState.repoData = await getData();
-  globalState.current = globalState.repoData;
-  drawRepo();
-})();
+function calculateTreeNodeSizes(tree) {
+  return tree;
+}
+
+
+/* Expects globalState.symbols to be set. */
+function buildTree(flatTree) {
+  const map = {};
+  for (let entry of flatTree) {
+    const path = entry.path.split('/');
+
+    let mapSpot = map;
+    for (let stop of path.slice(0, -1))
+      mapSpot = mapSpot[stop];
+
+    const fileName = path[path.length-1];
+    mapSpot[fileName] = entry.type === 'tree' ? {} : entry;
+
+    const typeSym = globalState.symbols.type;
+    mapSpot[fileName][typeSym] = entry.type;
+  }
+  return map;
+}
+
+
+function cacheGlobalState() {
+  localStorage.setItem('globalState', JSON.stringify({
+    symbols: globalState.symbols,
+    tree: globalState.tree,
+  }));
+}
+
+
+async function init() {
+  const name = 'postgres';
+
+  const cachedGlobalState = localStorage.getItem('globalState');
+  if (!cachedGlobalState) {
+    globalState.symbols = {
+      type: nanoid(),
+      size: nanoid(),
+    }
+
+    const url = `https://api.github.com/repos/${name}/${name}/git/trees/master?recursive=true`
+    const res = await fetch(url);
+    const json = await res.json();
+    globalState.tree = buildTree(json.tree);
+
+    cacheGlobalState();
+  } else
+    globalState = {
+      ...globalState,
+      ...JSON.parse(cachedGlobalState),
+    }
+  
+  globalState.stack.push(globalState.tree);
+  drawCurrentState();
+}
+
+
+init();
