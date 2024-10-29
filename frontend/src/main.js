@@ -90,7 +90,21 @@ async function drawCurrentState() {
     const pre = document.createElement('pre');
     const code = document.createElement('code');
     pre.append(code);
-    code.innerText = atob(currentState.content);
+
+    const sourceCodeString = atob(currentState.content);
+    const lines = sourceCodeString.split('\n')
+      .map((line, i) => {
+        const span = document.createElement('span');
+        span.className = 'line-number';
+        // TODO fix line number whitespace
+        span.innerText = `${i+1}  `;
+        return [span, line + '\n'];
+      })
+      .flat();
+
+    code.append(...lines);
+
+    //code.append(atob(currentState.content));
 
     globalState.cards.push(pre);
   }
@@ -154,7 +168,7 @@ function cacheGlobalState() {
 
 
 async function init() {
-  const name = 'scylladb';
+  const name = 'postgres';
 
   const cachedGlobalState = localStorage.getItem('globalState');
   if (!cachedGlobalState) {

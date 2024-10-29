@@ -54,7 +54,7 @@ main {
 }
 
 .main-blob {
-  align-items: top;
+  align-items: flex-start;
 }
 
 .subtree-card, .file-card, .dotdot {
@@ -88,7 +88,11 @@ main {
   font-size: 40px;
 }
 
-code {
+pre {
   color: white;
-  font-size: 1.3em;
+  font-size: 16px;
+}
+
+.line-number {
+  color: var(--gray-7);
 }
