@@ -9,6 +9,20 @@ let globalState = {
 };
 
 
+function clearCards() {
+  while (globalState.cards.length)
+    globalState.cards.pop().remove();
+}
+
+
+function enterDir(subtree) {
+  globalState.stack.push(subtree);
+  clearCards();
+  drawCurrentState();
+  console.log(globalState);
+}
+
+
 function createCard(name, subtree) {  
   const {size: sizeSym} = globalState.symbols;
   const size = subtree[sizeSym];
@@ -24,6 +38,7 @@ function createCard(name, subtree) {
   if (subtree[typeSym] === 'tree') {
     card.style.color = 'hsl(219 100% 50%)';
     card.style.backgroundColor = 'hsl(250 90% 80%)';
+    card.onclick = () => enterDir(subtree);
     /*card.onclick = async () => {
   
       globalState.stack.push(globalState.current);
@@ -38,37 +53,35 @@ function createCard(name, subtree) {
 }
 
 
-function clearCards() {
-  while (globalState.cards.length)
-    globalState.cards.pop().remove();
+function leaveDir() {
+  globalState.stack.pop();
+  clearCards();
+  drawCurrentState();
 }
 
 
 async function drawCurrentState() {
+  const {type: typeSym, size: sizeSym} = globalState.symbols;
   const main = document.body.children[0];
 
   const currentState = globalState.stack[globalState.stack.length-1];
   const entries = Object.entries(currentState);
   // TODO: sort entries properly
 
-  globalState.cards = entries.map( ([k, v]) => createCard(k, v));
-  globalState.cards.map(card => main.append(card));
+  globalState.cards = entries
+    .filter(([name, _]) => name !== typeSym && name !== sizeSym )
+    .map( ([k, v]) => createCard(k, v));
 
-
-
-  /*if (globalState.stack.length) {
+  // Draw dot dot card
+  if (globalState.stack.length > 1) {
     let dotdot = document.createElement('div');
     dotdot.className = 'dotdot';
     dotdot.innerText = '..';
-    dotdot.onclick = () => {
-      globalState.current = globalState.stack.pop();
-      clearCards();
-      drawRepo();
-    };
+    dotdot.onclick = leaveDir;
     globalState.cards = [dotdot, ...globalState.cards];
   }
 
-  globalState.cards.forEach(card => main.append(card));*/
+  globalState.cards.map(card => main.append(card));
 
 
   // TODO: bin packin'
@@ -128,7 +141,7 @@ function cacheGlobalState() {
 
 
 async function init() {
-  const name = 'postgres';
+  const name = 'scylladb';
 
   const cachedGlobalState = localStorage.getItem('globalState');
   if (!cachedGlobalState) {
