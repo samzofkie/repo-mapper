@@ -10,8 +10,9 @@ let globalState = {
 
 
 function createCard(name, subtree) {  
-  const size = 10000; //dirEnt[1].size;
-  const scaledSize = Math.log2(size) ** 1.88 / 6 + 5;
+  const {size: sizeSym} = globalState.symbols;
+  const size = subtree[sizeSym];
+  const scaledSize = Math.log2(size) ** 1.9 / 6 + 6;
 
   const card = document.createElement('div');
   card.className = 'dirent-card'
@@ -53,18 +54,9 @@ async function drawCurrentState() {
   globalState.cards = entries.map( ([k, v]) => createCard(k, v));
   globalState.cards.map(card => main.append(card));
 
-  
-  /*const sortedDirEnts = Object.entries(repoData)
-    .toSorted(([_, aData], [__, bData]) => aData.size - bData.size);*/
 
 
-  /*globalState.cards = Object.entries(repo)
-    //toSorted(([nameA, dataA], [nameB, dataB]) => {
-        //if (nameA)
-    //
-    .map(createCard);
-
-  if (globalState.stack.length) {
+  /*if (globalState.stack.length) {
     let dotdot = document.createElement('div');
     dotdot.className = 'dotdot';
     dotdot.innerText = '..';
@@ -82,29 +74,48 @@ async function drawCurrentState() {
   // TODO: bin packin'
 }
 
+function calculateTreeSize(tree) {
+  const {type: typeSym, size: sizeSym} = globalState.symbols;
 
-function calculateTreeNodeSizes(tree) {
-  return tree;
+  for (const [name, entry] of Object.entries(tree)) {
+    if (name !== typeSym && name !== sizeSym) {
+      if (entry[typeSym] === 'tree')
+        calculateTreeSize(entry);
+      
+      tree[sizeSym] += entry[sizeSym];
+    }
+  }
 }
 
 
-/* Expects globalState.symbols to be set. */
+// Expects globalState.symbols to be set.
 function buildTree(flatTree) {
-  const map = {};
+  const {type: typeSym, size: sizeSym} = globalState.symbols;
+  const tree = {};
   for (let entry of flatTree) {
     const path = entry.path.split('/');
 
-    let mapSpot = map;
+    // Navigate to parent
+    let treeSpot = tree;
     for (let stop of path.slice(0, -1))
-      mapSpot = mapSpot[stop];
+      treeSpot = treeSpot[stop];
 
-    const fileName = path[path.length-1];
-    mapSpot[fileName] = entry.type === 'tree' ? {} : entry;
-
-    const typeSym = globalState.symbols.type;
-    mapSpot[fileName][typeSym] = entry.type;
+    // Set child appropriately
+    const newChildKey = path[path.length-1];
+    treeSpot[newChildKey] = entry.type === 'tree' ? {} : entry;
+    
+    const newChild = treeSpot[newChildKey]
+    newChild[typeSym] = entry.type;
+    newChild[sizeSym] = entry.type === 'tree' ? 0 : entry.size;
   }
-  return map;
+  
+  // Recursively calculate size of subtrees
+  for (let [_, entry] of Object.entries(tree)) {
+    if (entry[typeSym] === 'tree')
+      calculateTreeSize(entry)    
+  }
+
+  return tree;
 }
 
 
@@ -126,12 +137,20 @@ async function init() {
       size: nanoid(),
     }
 
-    const url = `https://api.github.com/repos/${name}/${name}/git/trees/master?recursive=true`
-    const res = await fetch(url);
-    const json = await res.json();
-    globalState.tree = buildTree(json.tree);
-
+    const cachedGHRes = localStorage.getItem('GHRes');
+    let GHRes;
+    if (!cachedGHRes) {
+      const url = `https://api.github.com/repos/${name}/${name}/git/trees/master?recursive=true`
+      const res = await fetch(url);
+      GHRes = await res.json();
+      localStorage.setItem('GHRes', JSON.stringify(GHRes));
+    } else
+      GHRes = JSON.parse(cachedGHRes);
+    
+    globalState.tree = buildTree(GHRes.tree);
+    
     cacheGlobalState();
+  
   } else
     globalState = {
       ...globalState,
