@@ -15,40 +15,39 @@ function clearCards() {
 }
 
 
-function enterDir(subtree) {
-  globalState.stack.push(subtree);
-  clearCards();
-  drawCurrentState();
-  console.log(globalState);
-}
-
-
 function createCard(name, subtree) {  
-  const {size: sizeSym} = globalState.symbols;
+  const {size: sizeSym, type: typeSym} = globalState.symbols;
   const size = subtree[sizeSym];
   const scaledSize = Math.log2(size) ** 1.9 / 6 + 6;
-
   const card = document.createElement('div');
-  card.className = 'dirent-card'
+
   card.style.fontSize = `${scaledSize / 2}px`;
   card.style.height = `${scaledSize * 4}px`;
   card.style.width = `${scaledSize * 4}px`;
+  card.innerText = name;
 
-  const typeSym = globalState.symbols.type;
   if (subtree[typeSym] === 'tree') {
-    card.style.color = 'hsl(219 100% 50%)';
-    card.style.backgroundColor = 'hsl(250 90% 80%)';
-    card.onclick = () => enterDir(subtree);
-    /*card.onclick = async () => {
-  
-      globalState.stack.push(globalState.current);
-      globalState.current = dirEnt[1].entries;
+    card.className = 'subtree-card';
+    card.onclick = () => {
+      globalState.stack.push(subtree);
       clearCards();
-      drawRepo();
-    };*/
+      drawCurrentState();
+    }
+  } else if (subtree[typeSym] === 'blob') {
+    card.className = 'file-card';
+    card.onclick = async () => {
+      const url = subtree.url;
+      const res = await fetch(url);
+      
+      globalState.stack.push({
+        ...(await res.json()),
+        [typeSym]: 'blob'
+      });
+      clearCards();
+      drawCurrentState();
+    }
   }
 
-  card.innerText = name;
   return card;
 }
 
@@ -63,14 +62,8 @@ function leaveDir() {
 async function drawCurrentState() {
   const {type: typeSym, size: sizeSym} = globalState.symbols;
   const main = document.body.children[0];
-
   const currentState = globalState.stack[globalState.stack.length-1];
-  const entries = Object.entries(currentState);
-  // TODO: sort entries properly
-
-  globalState.cards = entries
-    .filter(([name, _]) => name !== typeSym && name !== sizeSym )
-    .map( ([k, v]) => createCard(k, v));
+  const currentStateType = currentState[typeSym];
 
   // Draw dot dot card
   if (globalState.stack.length > 1) {
@@ -78,11 +71,31 @@ async function drawCurrentState() {
     dotdot.className = 'dotdot';
     dotdot.innerText = '..';
     dotdot.onclick = leaveDir;
-    globalState.cards = [dotdot, ...globalState.cards];
+    globalState.cards.push(dotdot);
+  }
+  
+  if (currentStateType === 'tree') {
+    main.className = 'main-tree';
+
+    const cards = Object.entries(currentState)
+      .filter(([name, _]) => name !== typeSym && name !== sizeSym )
+      // TODO: sort entries properly
+      .map(([k, v]) => createCard(k, v));
+  
+    globalState.cards.push(...cards);
+
+  } else if (currentStateType === 'blob') {
+    main.className = 'main-blob';
+
+    const pre = document.createElement('pre');
+    const code = document.createElement('code');
+    pre.append(code);
+    code.innerText = atob(currentState.content);
+
+    globalState.cards.push(pre);
   }
 
   globalState.cards.map(card => main.append(card));
-
 
   // TODO: bin packin'
 }
@@ -104,7 +117,10 @@ function calculateTreeSize(tree) {
 // Expects globalState.symbols to be set.
 function buildTree(flatTree) {
   const {type: typeSym, size: sizeSym} = globalState.symbols;
-  const tree = {};
+  const tree = {
+    [typeSym]: 'tree',
+  };
+
   for (let entry of flatTree) {
     const path = entry.path.split('/');
 
@@ -123,10 +139,7 @@ function buildTree(flatTree) {
   }
   
   // Recursively calculate size of subtrees
-  for (let [_, entry] of Object.entries(tree)) {
-    if (entry[typeSym] === 'tree')
-      calculateTreeSize(entry)    
-  }
+  calculateTreeSize(tree);
 
   return tree;
 }

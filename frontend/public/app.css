@@ -43,17 +43,21 @@ body {
 }
 
 main {
-  /*position: relative;*/
   display: flex;
   flex-flow: row wrap;
-  align-items: center;
   gap: 5px;
   justify-content: space-evenly;
 }
 
-.dirent-card {
-  background-color: var(--gray-3);
-  color: var(--gray-8);
+.main-tree {
+  align-items: center;
+}
+
+.main-blob {
+  align-items: top;
+}
+
+.subtree-card, .file-card, .dotdot {
   border-radius: 50%;
   
   display: inline-flex;
@@ -64,18 +68,27 @@ main {
   user-select: none;
 }
 
+.subtree-card {
+  color: hsl(219 100% 50%);
+  background-color: hsl(250 90% 80%);
+}
+
+.file-card {
+  background-color: var(--gray-3);
+  color: var(--gray-8);
+}
+
 .dotdot {
   background-color: hsl(64, 56%, 47%);
   color: var(--gray-1);
   border-radius: 50%;
 
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-
   height: 50px;
   width: 50px;
   font-size: 40px;
+}
 
-  user-select: none;
+code {
+  color: white;
+  font-size: 1.3em;
 }
