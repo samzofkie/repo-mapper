@@ -1,5 +1,5 @@
 {
-  "name": "repo-mapper-frontend",
+  "name": "repographer-frontend",
   "version": "1.0.0",
   "description": "The frontend to a tool for visualizing code repositories.",
   "main": "index.js",

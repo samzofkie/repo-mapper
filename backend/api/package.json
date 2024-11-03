@@ -1,5 +1,5 @@
 {
-  "name": "repo-mapper-backend",
+  "name": "repographer-backend",
   "version": "1.0.0",
   "description": "The backend to a tool for visualizing a code repository.",
   "main": "api.js",
