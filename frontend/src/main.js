@@ -18,13 +18,13 @@ function clearCards() {
 function createCard(name, subtree) {  
   const {size: sizeSym, type: typeSym} = globalState.symbols;
   const size = subtree[sizeSym];
-  const scaledSize = Math.log2(size) ** 1.9 / 6 + 6;
-  const card = document.createElement('div');
+  const scaledSize = Math.log2(size) ** 2.2 / 20 + 20;
+  const card = document.createElement('code');
 
   card.style.fontSize = `${scaledSize / 2}px`;
   card.style.height = `${scaledSize * 4}px`;
   card.style.width = `${scaledSize * 4}px`;
-  card.innerText = name;
+  card.innerText = name + ' ' + Math.floor(size / 1000000) + 'MB';
 
   if (subtree[typeSym] === 'tree') {
     card.className = 'subtree-card';
@@ -67,7 +67,7 @@ async function drawCurrentState() {
 
   // Draw dot dot card
   if (globalState.stack.length > 1) {
-    let dotdot = document.createElement('div');
+    let dotdot = document.createElement('code');
     dotdot.className = 'dotdot';
     dotdot.innerText = '..';
     dotdot.onclick = leaveDir;
@@ -113,6 +113,7 @@ async function drawCurrentState() {
 
   // TODO: bin packin'
 }
+
 
 function calculateTreeSize(tree) {
   const {type: typeSym, size: sizeSym} = globalState.symbols;
@@ -168,7 +169,8 @@ function cacheGlobalState() {
 
 
 async function init() {
-  const name = 'postgres';
+  const owner = 'sveltejs';
+  const repo = 'kit';
 
   const cachedGlobalState = localStorage.getItem('globalState');
   if (!cachedGlobalState) {
@@ -180,16 +182,16 @@ async function init() {
     const cachedGHRes = localStorage.getItem('GHRes');
     let GHRes;
     if (!cachedGHRes) {
-      const url = `https://api.github.com/repos/${name}/${name}/git/trees/master?recursive=true`
+      const url = `https://api.github.com/repos/${owner}/${repo}/git/trees/main?recursive=true`
       const res = await fetch(url);
       GHRes = await res.json();
-      localStorage.setItem('GHRes', JSON.stringify(GHRes));
+      //localStorage.setItem('GHRes', JSON.stringify(GHRes));
     } else
       GHRes = JSON.parse(cachedGHRes);
     
     globalState.tree = buildTree(GHRes.tree);
     
-    cacheGlobalState();
+    //cacheGlobalState();
   
   } else
     globalState = {
@@ -202,4 +204,4 @@ async function init() {
 }
 
 
-init();
+//init();

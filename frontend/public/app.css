@@ -10,14 +10,21 @@ html {
   --gray-8: hsl(240 10% 82%);
   --gray-9: hsl(246 80% 96%);
 
-  --padding-0: 10px;
-  --padding-1: 20px;
+  --padding-0: 5px;
+  --padding-1: 10px;
+  --padding-2: 20px;
+  --padding-3: 40px;
+
   
   --radius-0: 10px;
   --radius-1: 30px;
+  --radius-2: 60px;
 
   --accent-0: hsl(230 100% 78.2%);
   --accent-1: hsl(275 100% 76.6%);
+
+  --blue-0: hsl(219 90% 50%);
+  --blue-1: hsl(220 100% 80%);
 
   --size-0: 12px;
   --size-1: 14px;
@@ -32,17 +39,134 @@ html {
   --size-10: 72px;
 }
 
+@font-face {
+  font-family: "Fira Mono";
+  src: url("/FiraMono-Regular.otf") format("opentype");
+}
+
 body {
   background-color: var(--gray-0);
-  color: var(--gray-7);
+  color: var(--gray-8);
+  font-size: (--size-2);
 
-  font-family: "Inter", serif;
-  font-optical-sizing: auto;
+  /*font-family: "Inter", serif;*/
+  font-family: "Fira Mono";
+  /*font-optical-sizing: auto;
   font-weight: 400;
-  font-style: normal;
+  font-style: normal;*/
 }
 
 main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.icon {
+  /*align-self: flex-start;*/
+  position: relative;
+  left: -200px;
+}
+
+code {
+  font-family: "Fira Mono";
+  color: var(--gray-0);
+  background-color: var(--blue-1);
+  padding: var(--padding-0);
+  border-radius: var(--radius-1);
+}
+
+.repo-input-container {
+  box-sizing: border-box;
+
+  padding: var(--padding-1);
+  border-radius: var(--radius-2);
+  background-color: var(--gray-3);
+  border: 2px solid var(--gray-8);
+
+  display: flex;
+  align-items: center;
+  gap: var(--padding-2);
+  
+  margin-bottom: var(--padding-3);
+}
+
+.repo-input {
+  border: none;
+
+  font-size: var(--size-2);
+
+  font-family: "Fira Mono";
+  text-align: center;
+
+  width: 7em;
+  border: none;
+  padding: var(--padding-0);
+  border-radius: var(--radius-1);
+  color: var(--gray-0);
+  background-color: var(--blue-1);
+}
+
+.repo-input:focus, .repo-input-container button:focus, .example-repo:focus {
+  outline: 2px solid var(--blue-0);
+}
+
+.repo-input-container p {
+  font-size: var(--size-5);
+  margin: 0;
+}
+
+.repo-input-container button {
+  background: none;
+	color: inherit;
+	border: none;
+	/*padding: 0;*/
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+
+  color: var(--gray-9);
+  background-color: var(--gray-5);
+  border-radius: var(--radius-1);
+  font-size: 1.8em;
+  padding: 0px 3px 0px 3px;
+
+  display: flex;
+}
+
+.examples {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--padding-1);
+}
+
+.example-repo {
+  color: inherit;
+  text-decoration: inherit;
+  cursor: pointer;
+
+  color: var(--gray-0);
+  background-color: var(--blue-1);
+  padding: var(--padding-1);
+  border-radius: var(--radius-1);
+
+  display: flex;
+  align-items: center;
+  gap: var(--padding-0);
+}
+
+.example-repo img {
+  height: 24px;
+  /*border: 1px solid var(--gray-8);*/
+  border-radius: 5px;
+}
+
+.example-repo-text {
+  font-weight: 900;
+}
+
+/*main {
   display: flex;
   flex-flow: row wrap;
   gap: 5px;
@@ -96,3 +220,7 @@ pre {
 .line-number {
   color: var(--gray-7);
 }
+
+code {
+  font-family: "Fira Mono";
+}*/

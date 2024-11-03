@@ -1,11 +1,16 @@
-1) Loading spinner
-2) Syntax highlighting
-3) LOC estimater
-4) Colors change depending on file extension / programming language
-5) Home page to index between directories / open new projects
-6) Custom flex layout algorithm
-7) Fix label font truncation / come up with nice UI solution
-8) Proper tree sorting
-9) Proper documentation
-10) Code number lines
-11) Code line truncation logic
+1) Choose a repo
+2) (Current) Bubble pages approach vs. bigger network / graph visualization
+   - Log scaling of size
+     - Explicit written size (? ex: 2.3MB) 
+   - Arranging lettering to not be truncated
+   - Color based on file extension (?) 
+3) Navigation logic
+   - (general visualization strategy)
+   - Scroll?
+   - Current path widget at top?
+   - Keyboard driven navigation (?)
+4) Code pages
+   - Syntax highlighting
+   - Row wrapping
+   - Line numbering
+5) `grep`ing

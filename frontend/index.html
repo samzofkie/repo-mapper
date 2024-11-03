@@ -8,10 +8,91 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
+    <!-- Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
   </head>
   <body>
     <main>
-      <script type="module" src="./src/main.js"></script>
+      <img src="/repo-icon.jpg" class="icon">
+      
+      <p>
+        Enter the <code>owner</code> and <code>repo</code> of a GitHub repository:
+      </p>
+      
+      <form class="repo-input-container">
+        <input class="repo-input" type="text" id="gh-owner" name="gh-owner" autofocus/>
+        <p>/</p>
+        <input class="repo-input" type="text" id="gh-repo" name="gh-repo"/>
+        <!--<input type="submit" value="crap"/>-->
+        <button type="reset">
+          <i class='bx bx-right-arrow-alt'></i>
+        </button>
+      </form>
+
+      <p>
+        Some examples:
+      </p>
+
+      <div class="examples">
+        <a href="/" class="example-repo">
+          <img src="https://avatars.githubusercontent.com/u/177543?s=48&v=4" />
+          <span class="example-owner-text">
+            postgres
+          </span>
+          /
+          <span class="example-repo-text">
+            postgres
+          </span>
+        </a>
+
+        <a href="/" class="example-repo">
+          <img src="https://avatars.githubusercontent.com/u/47359?s=48&v=4" />
+          <span class="example-owner-text">
+            apache
+          </span>
+          /
+          <span class="example-repo-text">
+            cassandra
+          </span>
+        </a>
+
+        <a href="/" class="example-repo">
+          <img src="https://avatars.githubusercontent.com/u/23617963?s=48&v=4" />
+          <span class="example-owner-text">
+            sveltejs
+          </span>
+          /
+          <span class="example-repo-text">
+            kit
+          </span>
+        </a>
+
+        <a href="/" class="example-repo">
+          <img src="https://avatars.githubusercontent.com/u/14364730?s=48&v=4" />
+          <span class="example-owner-text">
+            scylladb
+          </span>
+          /
+          <span class="example-repo-text">
+            scylladb
+          </span>
+        </a>
+
+        <a href="/" class="example-repo">
+          <img src="https://avatars.githubusercontent.com/u/41768318?s=48&v=4" />
+          <span class="example-owner-text">
+            openjdk
+          </span>
+          /
+          <span class="example-repo-text">
+            jdk
+          </span>
+        </a>
+      </div>
+    
     </main>
+    <script type="module" src="./src/main.js"></script>
   </body>
 </html>
