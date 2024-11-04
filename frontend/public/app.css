@@ -39,21 +39,21 @@ html {
 }
 
 @font-face {
-  font-family: "Fira Mono";
-  src: url("/FiraMono-Regular.otf") format("opentype");
+  font-family: "League Mono";
+  src: url("LeagueMono.woff2") format("woff2");
 }
 
 body {
   background-color: var(--gray-0);
   color: var(--gray-8);
-  font-size: (--size-2);
-
-  font-family: "Fragment Mono", monospace;
+  font-size: var(--size-2);
+  font-family: "League Mono", monospace;
+  font-weight: 400;
 }
 
 nav {
   position: absolute;
-  left: 150px;
+  left: 130px;
   top: 50px;
 }
 
@@ -65,7 +65,7 @@ main {
 }
 
 code {
-  font-family: "Fragment Mono", monospace;
+  font-family: "League Mono", monospace;
   color: var(--gray-0);
   background-color: var(--blue-1);
   padding: var(--padding-0);
@@ -91,8 +91,9 @@ code {
   border: none;
 
   font-size: var(--size-2);
+  font-family: "League Mono";
+  font-weight: 400;
 
-  font-family: "Fragment Mono";
   text-align: center;
 
   width: 7em;
@@ -159,7 +160,7 @@ code {
 }
 
 .example-repo-text {
-  font-weight: 900;
+  font-weight: 700;
 }
 
 /*main {
