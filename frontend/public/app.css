@@ -1,20 +1,19 @@
 html {
   --gray-0: hsl(240 40% 4%);
-  --gray-1: hsl(240 20% 8%);
-  --gray-2: hsl(240 14% 12%);
-  --gray-3: hsl(240 14% 16%);
-  --gray-4: hsl(240 13% 18%);
-  --gray-5: hsl(240 13% 35%);
-  --gray-6: hsl(240 10% 44%);
+  --gray-1: hsl(240 40% 8%);
+  --gray-2: hsl(240 20% 12%);
+  --gray-3: hsl(240 20% 16%);
+  --gray-4: hsl(240 20% 18%);
+  --gray-5: hsl(240 20% 35%);
+  --gray-6: hsl(240 20% 44%);
   --gray-7: hsl(240 15% 70%);
   --gray-8: hsl(240 10% 82%);
-  --gray-9: hsl(246 80% 96%);
+  --gray-9: hsl(246 10% 96%);
 
   --padding-0: 5px;
   --padding-1: 10px;
   --padding-2: 20px;
   --padding-3: 40px;
-
   
   --radius-0: 10px;
   --radius-1: 30px;
@@ -49,27 +48,24 @@ body {
   color: var(--gray-8);
   font-size: (--size-2);
 
-  /*font-family: "Inter", serif;*/
-  font-family: "Fira Mono";
-  /*font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;*/
+  font-family: "Fragment Mono", monospace;
+}
+
+nav {
+  position: absolute;
+  left: 150px;
+  top: 50px;
 }
 
 main {
+  padding-top: 200px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.icon {
-  /*align-self: flex-start;*/
-  position: relative;
-  left: -200px;
-}
-
 code {
-  font-family: "Fira Mono";
+  font-family: "Fragment Mono", monospace;
   color: var(--gray-0);
   background-color: var(--blue-1);
   padding: var(--padding-0);
@@ -96,7 +92,7 @@ code {
 
   font-size: var(--size-2);
 
-  font-family: "Fira Mono";
+  font-family: "Fragment Mono";
   text-align: center;
 
   width: 7em;

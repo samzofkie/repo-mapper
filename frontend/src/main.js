@@ -169,7 +169,7 @@ function cacheGlobalState() {
 
 
 async function init() {
-  const owner = 'sveltejs';
+  /*const owner = 'sveltejs';
   const repo = 'kit';
 
   const cachedGlobalState = localStorage.getItem('globalState');
@@ -200,8 +200,13 @@ async function init() {
     }
   
   globalState.stack.push(globalState.tree);
-  drawCurrentState();
+  drawCurrentState();*/
+
+  const searchUrl = 'https://api.github.com/search/repositories?q=postg'
+  const res = await fetch(searchUrl);
+  const json = await res.json();
+  console.log(json); 
 }
 
 
-//init();
+init();
