@@ -5,25 +5,20 @@ html {
   --gray-3: hsl(240 20% 16%);
   --gray-4: hsl(240 20% 18%);
   --gray-5: hsl(240 20% 35%);
-  --gray-6: hsl(240 20% 44%);
+  --gray-6: hsl(240 15% 44%);
   --gray-7: hsl(240 15% 70%);
   --gray-8: hsl(240 10% 82%);
   --gray-9: hsl(246 10% 96%);
 
-  --padding-0: 5px;
-  --padding-1: 10px;
-  --padding-2: 20px;
-  --padding-3: 40px;
+  --space-0: 5px;
+  --space-1: 10px;
+  --space-2: 20px;
+  --space-3: 40px;
+  --space-4: 80px;
   
   --radius-0: 10px;
   --radius-1: 30px;
   --radius-2: 60px;
-
-  --accent-0: hsl(230 100% 78.2%);
-  --accent-1: hsl(275 100% 76.6%);
-
-  --blue-0: hsl(219 90% 50%);
-  --blue-1: hsl(220 100% 80%);
 
   --size-0: 12px;
   --size-1: 14px;
@@ -44,98 +39,61 @@ html {
 }
 
 body {
+  color: var(--gray-9);
   background-color: var(--gray-0);
-  color: var(--gray-8);
+
   font-size: var(--size-2);
   font-family: "League Mono", monospace;
-  font-weight: 400;
+  font-weight: 300;
 }
 
-nav {
+header {
   position: absolute;
-  left: 130px;
-  top: 50px;
+  left: 50%;
+  top: 3%;
+  transform: translate(-50%);
+  transform: translate(-350px);
+}
+
+.top-space {
+  margin: var(--space-4);
 }
 
 main {
-  padding-top: 200px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: var(--space-0);
 }
 
-code {
-  font-family: "League Mono", monospace;
-  color: var(--gray-0);
-  background-color: var(--blue-1);
-  padding: var(--padding-0);
-  border-radius: var(--radius-1);
-}
-
-.repo-input-container {
-  box-sizing: border-box;
-
-  padding: var(--padding-1);
-  border-radius: var(--radius-2);
-  background-color: var(--gray-3);
-  border: 2px solid var(--gray-8);
-
-  display: flex;
-  align-items: center;
-  gap: var(--padding-2);
-  
-  margin-bottom: var(--padding-3);
-}
-
-.repo-input {
-  border: none;
-
+.repo-search-input {
   font-size: var(--size-2);
   font-family: "League Mono";
   font-weight: 400;
 
-  text-align: center;
-
-  width: 7em;
-  border: none;
-  padding: var(--padding-0);
-  border-radius: var(--radius-1);
-  color: var(--gray-0);
-  background-color: var(--blue-1);
-}
-
-.repo-input:focus, .repo-input-container button:focus, .example-repo:focus {
-  outline: 2px solid var(--blue-0);
-}
-
-.repo-input-container p {
-  font-size: var(--size-5);
-  margin: 0;
-}
-
-.repo-input-container button {
-  background: none;
-	color: inherit;
-	border: none;
-	/*padding: 0;*/
-	font: inherit;
-	cursor: pointer;
-	outline: inherit;
-
   color: var(--gray-9);
-  background-color: var(--gray-5);
-  border-radius: var(--radius-1);
-  font-size: 1.8em;
-  padding: 0px 3px 0px 3px;
+  background-color: var(--gray-4);
 
-  display: flex;
+  width: 20em;  
+
+  border: none;
+  padding: var(--space-1);
+  border-radius: var(--radius-1);
+}
+
+.repo-search-input:focus, .example-repo:focus {
+  outline: 2px solid var(--gray-9);
+}
+
+.repo-search-space {
+  margin: var(--space-2);
 }
 
 .examples {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--padding-1);
+  gap: var(--space-1);
 }
 
 .example-repo {
@@ -143,81 +101,28 @@ code {
   text-decoration: inherit;
   cursor: pointer;
 
-  color: var(--gray-0);
-  background-color: var(--blue-1);
-  padding: var(--padding-1);
+  color: var(--gray-9);
+  background-color: var(--gray-4);
+
+  padding: var(--space-1);
   border-radius: var(--radius-1);
+  border: none;
 
   display: flex;
   align-items: center;
-  gap: var(--padding-0);
+  gap: var(--space-2);
+}
+
+.example-repo-text {
+  display: flex;
+  gap: var(--space-0);
 }
 
 .example-repo img {
   height: 24px;
-  /*border: 1px solid var(--gray-8);*/
   border-radius: 5px;
 }
 
-.example-repo-text {
-  font-weight: 700;
+.example-repo-text b {
+  font-weight: 800;
 }
-
-/*main {
-  display: flex;
-  flex-flow: row wrap;
-  gap: 5px;
-  justify-content: space-evenly;
-}
-
-.main-tree {
-  align-items: center;
-}
-
-.main-blob {
-  align-items: flex-start;
-}
-
-.subtree-card, .file-card, .dotdot {
-  border-radius: 50%;
-  
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-
-  overflow: hidden;
-  user-select: none;
-}
-
-.subtree-card {
-  color: hsl(219 100% 50%);
-  background-color: hsl(250 90% 80%);
-}
-
-.file-card {
-  background-color: var(--gray-3);
-  color: var(--gray-8);
-}
-
-.dotdot {
-  background-color: hsl(64, 56%, 47%);
-  color: var(--gray-1);
-  border-radius: 50%;
-
-  height: 50px;
-  width: 50px;
-  font-size: 40px;
-}
-
-pre {
-  color: white;
-  font-size: 16px;
-}
-
-.line-number {
-  color: var(--gray-7);
-}
-
-code {
-  font-family: "Fira Mono";
-}*/
