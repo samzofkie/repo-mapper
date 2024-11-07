@@ -2,11 +2,11 @@
 <html>
   <head>
     <title>repographer</title>
+    <link rel="stylesheet" href="palette.css"/>
     <link rel="stylesheet" href="app.css"/>
 
     <!-- Boxicons -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-
   </head>
   <body>
     <header>
@@ -181,29 +181,30 @@
       </nav>
     </header>
     
-
     <br class="top-space">
     
     <main>
 
       <p>
-        <!-- Enter the <code>owner</code> and <code>repo</code> of a GitHub repository: -->
         Search GitHub for a repository to explore:
       </p>
       
-      <form class="repo-search">
-        <input class="repo-search-input" type="text" id="repo-search" name="repo-search" autofocus/>
+      <form class="repo-search-form">
+        <i class='bx bx-search bx-sm repo-search-icon'></i>
+        <input class="gray-area repo-search-input" type="search" id="repo-search" name="repo-search" autofocus/>
       </form>
+
+      <div class="gray-area repo-search-results"></div>
 
       <br class="repo-search-space">
 
       <p>
-        Or choose a popular one:
+        Or choose from these popular ones:
       </p>
 
       <div class="examples">
 
-        <a href="/" class="example-repo">
+        <a href="/" class="gray-area example-repo">
           <img src="https://avatars.githubusercontent.com/u/177543?s=48&v=4" />
 
           <div class="example-repo-text">
@@ -211,36 +212,44 @@
           </div>
         </a>
 
-        <a href="/" class="example-repo">
+        <a href="/" class="gray-area example-repo">
           <img src="https://avatars.githubusercontent.com/u/47359?s=48&v=4" />
           <div class="example-repo-text">
             <span>apache</span> / <b>cassandra</b>
           </div>
         </a>
 
-        <a href="/" class="example-repo">
+        <a href="/" class="gray-area example-repo">
           <img src="https://avatars.githubusercontent.com/u/23617963?s=48&v=4" />
           <div class="example-repo-text">
             <span>sveltejs</span> / <b>kit</b>
           </div>
         </a>
 
-        <a href="/" class="example-repo">
+        <a href="/" class="gray-area example-repo">
           <img src="https://avatars.githubusercontent.com/u/14364730?s=48&v=4" />
           <div class="example-repo-text">
             <span>scylladb</span> / <b>scylladb</b>
           </div>
         </a>
 
-        <a href="/" class="example-repo">
+        <a href="/" class="gray-area example-repo">
           <img src="https://avatars.githubusercontent.com/u/41768318?s=48&v=4" />
           <div class="example-repo-text">
             <span>openjdk</span> / <b>jdk</b>
           </div>
         </a>
+
+        <a href="/" class="gray-area example-repo">
+          <img src="https://avatars.githubusercontent.com/u/1412239?s=48&v=4" />
+          <div class="example-repo-text">
+            <span>nginx</span> / <b>nginx</b>
+          </div>
+        </a>
       </div>
     
     </main>
+
     <script type="module" src="./src/main.js"></script>
   </body>
 </html>

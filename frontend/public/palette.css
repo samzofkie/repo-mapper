@@ -1,0 +1,36 @@
+html {
+  --gray-0: hsl(240 40% 4%);
+  --gray-1: hsl(240 40% 8%);
+  --gray-2: hsl(240 20% 12%);
+  --gray-3: hsl(240 20% 16%);
+  --gray-4: hsl(240 20% 18%);
+  --gray-5: hsl(240 20% 35%);
+  --gray-6: hsl(240 15% 44%);
+  --gray-7: hsl(240 15% 70%);
+  --gray-8: hsl(240 10% 82%);
+  --gray-9: hsl(246 10% 96%);
+
+  --space-0: 5px;
+  --space-1: 10px;
+  --space-2: 20px;
+  --space-3: 40px;
+  --space-4: 80px;
+  --space-5: 160px;
+  --space-6: 320px;
+  
+  --radius-0: 10px;
+  --radius-1: 30px;
+  --radius-2: 60px;
+
+  --size-0: 12px;
+  --size-1: 14px;
+  --size-2: 16px;
+  --size-3: 18px;
+  --size-4: 20px;
+  --size-5: 24px;
+  --size-6: 30px;
+  --size-7: 36px;
+  --size-8: 48px;
+  --size-9: 60px;
+  --size-10: 72px;
+}
