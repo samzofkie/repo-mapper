@@ -20,7 +20,7 @@ header {
   transform: translate(-350px);
 }
 
-.top-space {
+#top-space {
   margin: var(--space-4);
 }
 
@@ -31,7 +31,7 @@ main {
   gap: var(--space-1);
 }
 
-.repo-search-form {
+#repo-search-form {
   display: flex;
   align-items: center;
   gap: var(--space-1);
@@ -49,25 +49,25 @@ main {
   padding: var(--space-1);
   border-radius: var(--radius-1);
 }
+
 .gray-area:focus {
   outline: 2px solid var(--gray-9);
 }
 
-
-.repo-search-input {
+#repo-search-input {
   width: 20em;
 }
 
-.repo-search-results {
-  width: var(--space-6);
+#repo-search-results {
+  /*width: var(--space-6);*/
   display: none;
 }
 
-.repo-search-space {
+#repo-search-space {
   margin: var(--space-2);
 }
 
-.examples {
+#examples {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
