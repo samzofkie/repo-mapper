@@ -59,8 +59,12 @@ main {
 }
 
 #repo-search-results {
-  /*width: var(--space-6);*/
+  background-color: var(--gray-0);
+  border: 2px solid var(--gray-6);
+  
   display: none;
+  flex-direction: column;
+  gap: var(--space-1);
 }
 
 #repo-search-space {
@@ -74,7 +78,7 @@ main {
   gap: var(--space-1);
 }
 
-.example-repo {
+.repo {
   text-decoration: inherit;
   cursor: pointer;
 
@@ -83,16 +87,16 @@ main {
   gap: var(--space-2);
 }
 
-.example-repo-text {
+.repo-text {
   display: flex;
   gap: var(--space-0);
 }
 
-.example-repo img {
+.repo img {
   height: 24px;
   border-radius: 5px;
 }
 
-.example-repo-text b {
+.repo-text b {
   font-weight: 800;
 }
