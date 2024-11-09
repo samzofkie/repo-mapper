@@ -67,6 +67,27 @@ main {
   gap: var(--space-1);
 }
 
+#repo-search-results-spinner {
+  border: 4px solid var(--gray-6);
+  border-radius: 50%;
+  border-top: 4px solid var(--gray-9);
+  width: var(--space-2);
+  height: var(--space-2);
+  -webkit-animation: spin 0.75s linear infinite; /* Safari */
+  animation: spin 0.75s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 #repo-search-space {
   margin: var(--space-2);
 }

@@ -1,59 +1,5 @@
-const globalState = {
-  GHSearchReqPending: false,
-};
-
-
-function showRepoSearchResultsDiv() {
-  const repoSearchResults = document.getElementById('repo-search-results');
-  repoSearchResults.style.display = 'flex';
-}
-
-function hideRepoSearchResultsDiv() {
-  const repoSearchResults = document.getElementById('repo-search-results');
-  repoSearchResults.style.display = 'none';
-  repoSearchResults.replaceChildren();
-}
-
-
-// This function uses globalState.GHSearchReqPending to reduce the frequency of
-// calls to getGHSearch
-async function meterGetGHSearch() {
-  if (!globalState.GHSearchReqPending) {
-    globalState.GHSearchReqPending = true;
-    showRepoSearchResultsDiv();
-    setTimeout(getGHSearch, 1000);
-  }
-}
-
-async function getGHSearch() {
-  const repoSearchInput = document.getElementById('repo-search-input');
-  const q = repoSearchInput.value;  
-  
-  if (!q.length) {
-    hideRepoSearchResultsDiv();
-  } else {
-
-    const searchURL = 
-      `https://api.github.com/search/repositories?q=${encodeURIComponent(q)}`;
-    const res = await fetch(searchURL);
-
-    if (res.status === 200) {
-      const repoSearchResultsAnchors = createRepoSearchResultsAnchors(await res.json());
-      const repoSearchResults = document.getElementById('repo-search-results');
-      repoSearchResults.replaceChildren(...repoSearchResultsAnchors);
-
-
-    } else {
-      console.error(`$GET {searchURL} returned HTTP ${res.status}`);
-    }
-  }
-  
-  globalState.GHSearchReqPending = false;
-}
-
-
 function createRepoSearchResultsAnchors(json) {
-  return json.items.map(repoData => {
+  return json.items.slice(0, 10).map(repoData => {
     const owner = repoData.owner.login;
     const name = repoData.name;
     const avatarUrl = repoData.owner.avatar_url;
@@ -82,10 +28,57 @@ function createRepoSearchResultsAnchors(json) {
   });
 }
 
+async function repoSearchInputHandler() {
+  const div = document.getElementById('repo-search-results');
+  const input = document.getElementById('repo-search-input');
+  const spinner = document.getElementById('repo-search-results-spinner');
+  const value = input.value;
+
+  const clearDiv = () => {
+    for (let child of [...div.children])
+      if (child.id !== 'repo-search-results-spinner') 
+        child.remove();
+  }
+
+  clearDiv();
+
+
+  if (value.length) {
+    spinner.style.display = 'block';
+    div.style.display = 'flex';
+
+    const searchURL = 
+      `https://api.github.com/search/repositories?q=${encodeURIComponent(value)}`;
+    console.log('requesting ' + searchURL);
+    const res = await fetch(searchURL);
+
+    spinner.style.display = 'none';
+
+    if (res.status === 200) {
+      const json = await res.json();
+      const anchors = createRepoSearchResultsAnchors(json);
+
+      // We call clearDiv here just to avoid multiple calls to 
+      // repoSearchInputHandler appending their search results after the first
+      // call to clearDiv above
+      clearDiv();
+      div.append(...anchors);
+
+    } else {
+      clearDiv();
+      div.innerText = 'The request to the /search endpoint in GitHub\'s API failed for some reason!'
+    }
+
+  } else {
+    div.style.display = 'none';
+  }
+
+}
+
 
 async function init() {
   const repoSearchInput = document.getElementById('repo-search-input');
-  repoSearchInput.addEventListener('input', meterGetGHSearch);
+  repoSearchInput.addEventListener('input', repoSearchInputHandler);
 }
 
 init();
