@@ -1,7 +1,7 @@
 {
-  "name": "repographer-frontend",
+  "name": "repographer.com",
   "version": "1.0.0",
-  "description": "The frontend to a tool for visualizing code repositories.",
+  "description": "A browser-based code repository visualization tool.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
