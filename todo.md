@@ -1,0 +1,10 @@
+- overall
+  - favicon
+- landing page
+  - example repo CSS class `repo`? whats up with that
+  - routing ? (?)
+  - re-examine UI design tbh
+  - clean up icon SVG
+  - more interesting spinner
+  - arrow pages for navigation
+- visualization page

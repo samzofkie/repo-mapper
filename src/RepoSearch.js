@@ -18,6 +18,8 @@ export class RepoSearchResultAnchor {
     this.owner = data.owner.login;
     this.name = data.name;
     this.avatarUrl = data.owner.avatar_url;
+    this.defaultBranch = data.default_branch;
+    console.log(data.default_branch);
 
     this.root = document.createElement('a');
     this.image = document.createElement('img');
@@ -27,6 +29,7 @@ export class RepoSearchResultAnchor {
     
     this.root.className = 'gray-area repo';
     this.root.tabIndex = 0;
+    this.root.href = `${this.owner}/${this.name}?defaultBranch=${this.defaultBranch}`;
 
     this.image.src = this.avatarUrl + '&s=48';
     this.image.alt = `Avatar image for the repository ${this.owner} ${this.name}`;
