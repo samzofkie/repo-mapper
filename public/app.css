@@ -4,73 +4,45 @@
 }
 
 body {
-  color: var(--gray-9);
-  background-color: var(--gray-0);
-
   font-size: var(--size-2);
   font-family: "League Mono", monospace;
   font-weight: 300;
+
+  color: var(--gray-9);
+  background-color: var(--gray-0);
 }
 
-header {
-  position: absolute;
-  left: 50%;
-  top: 3%;
-  transform: translate(-50%);
-  transform: translate(-350px);
-}
-
-#top-space {
-  margin: var(--space-4);
-}
-
-main {
+.centered {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--space-1);
 }
 
-#repo-search-form {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-}
-
-.gray-area {
-  font-size: var(--size-2);
-  font-family: "League Mono";
-  font-weight: 400;
-
-  color: var(--gray-9);
-  background-color: var(--gray-4);
-
-  border: none;
-  padding: var(--space-1);
+.rounded {
   border-radius: var(--radius-1);
+  padding: var(--space-1);
 }
 
-.gray-area:focus {
+.unstyled-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.gray {
+  background-color: var(--gray-4);
+}
+
+.tabable:focus {
   outline: 2px solid var(--gray-9);
 }
 
-#repo-search-input {
-  width: 20em;
-}
-
-#repo-search-results {
-  background-color: var(--gray-0);
-  border: 2px solid var(--gray-6);
-  
-  display: none;
-  flex-direction: column;
-  gap: var(--space-1);
-}
-
-#repo-search-results-spinner, #repo-root-spinner {
+.spinner {
   border: 4px solid var(--gray-6);
   border-radius: 50%;
   border-top: 4px solid var(--gray-9);
+
   width: var(--space-2);
   height: var(--space-2);
   -webkit-animation: spin 0.75s linear infinite; /* Safari */
@@ -88,36 +60,19 @@ main {
   100% { transform: rotate(360deg); }
 }
 
-#repo-search-space {
-  margin: var(--space-2);
+/* Clobber default styling for all <progress>s */
+progress:not([value]) {
+  background-color: inherit;
 }
 
-#examples {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-1);
+progress:not([value])::-webkit-progress-bar {
+  background-color: inherit;
 }
 
-.repo {
-  text-decoration: inherit;
-  cursor: pointer;
-
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
+progress:not([value])::-webkit-progress-value {
+  background-color: inherit;
 }
 
-.repo-text {
-  display: flex;
-  gap: var(--space-0);
-}
-
-.repo img {
-  height: 24px;
-  border-radius: 5px;
-}
-
-.repo-text b {
-  font-weight: 800;
+progress:not([value])::-moz-progress-bar {
+  background-color: inherit;
 }

@@ -1,10 +1,11 @@
 - overall
   - favicon
+  - footer with copyright
 - landing page
-  - example repo CSS class `repo`? whats up with that
   - routing ? (?)
   - re-examine UI design tbh
   - clean up icon SVG
+    - correct a tag around SVG
   - more interesting spinner
-  - arrow pages for navigation
+  - arrow keys for navigation
 - visualization page
