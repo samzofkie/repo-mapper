@@ -8,4 +8,5 @@
     - correct a tag around SVG
   - more interesting spinner
   - arrow keys for navigation
+  - offline warning
 - visualization page

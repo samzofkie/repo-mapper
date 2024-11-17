@@ -194,12 +194,14 @@
           <label for="repo-search-term">
             <i class='bx bx-search bx-sm repo-search-icon'></i>
           </label>
-          <input class="rounded gray tabable" type="search" name="repo-search-term" autofocus/>
+          <input class="rounded gray tabable" name="repo-search-term" autofocus/>
         </form>
   
-        <ol id="results" class="rounded" style="display: none;">
+        <div class="rounded" style="display: none;">
           <progress class="spinner"></progress>
-        </ol>
+          <p id="error"></p>
+          <ol id="results" class="unstyled-list repo-list"></ol>
+        </div>
       </section>
 
       <section id="example-repos" class="centered">
@@ -207,40 +209,40 @@
           Or choose from these popular ones:
         </h2>
 
-        <ol class="unstyled-list">
+        <ol class="rounded unstyled-list repo-list">
           <li>
-            <a href="/postgres/postgres?defaultBranch=master" class="rounded centered tabable gray">
-              <img src="https://avatars.githubusercontent.com/u/177543?s=48&v=4" />
+            <a href="/postgres/postgres?defaultBranch=master" class="rounded centered tabable gray repo-card">
+              <img src="https://avatars.githubusercontent.com/u/177543?s=48&v=4" alt="Avatar image for postgres postgres."/>
               <span>postgres / <b>postgres</b></span>
             </a>
           </li>
           <li>
-            <a href="/apache/cassandra?defaultBranch=trunk" class="rounded centered tabable gray">
-              <img src="https://avatars.githubusercontent.com/u/47359?s=48&v=4" />
+            <a href="/apache/cassandra?defaultBranch=trunk" class="rounded centered tabable gray repo-card">
+              <img src="https://avatars.githubusercontent.com/u/47359?s=48&v=4" alt="Avatar image for apache cassandra."/>
               <span>apache / <b>cassandra</b></span>
             </a>
           </li>
           <li>
-            <a href="/sveltejs/kit?defaultBranch=main" class="rounded centered tabable gray">
-              <img src="https://avatars.githubusercontent.com/u/23617963?s=48&v=4" />
+            <a href="/sveltejs/kit?defaultBranch=main" class="rounded centered tabable gray repo-card">
+              <img src="https://avatars.githubusercontent.com/u/23617963?s=48&v=4" alt="Avatar image for sveltejs kit."/>
               <span>sveltejs / <b>kit</b></span>
             </a>
           </li>
           <li>
-            <a href="/scylladb/scylladb?defaultBranch=master" class="rounded centered tabable gray">
-              <img src="https://avatars.githubusercontent.com/u/14364730?s=48&v=4" />
+            <a href="/scylladb/scylladb?defaultBranch=master" class="rounded centered tabable gray repo-card">
+              <img src="https://avatars.githubusercontent.com/u/14364730?s=48&v=4" alt="Avatar image for scylladb scylladb."/>
               <span>scylladb / <b>scylladb</b></span>
             </a>
           </li>
           <li>
-            <a href="/openjdk/jdk?defaultBranch=master" class="rounded centered tabable gray">
-              <img src="https://avatars.githubusercontent.com/u/41768318?s=48&v=4" />
+            <a href="/openjdk/jdk?defaultBranch=master" class="rounded centered tabable gray repo-card">
+              <img src="https://avatars.githubusercontent.com/u/41768318?s=48&v=4" alt="Avatar image for openjdk jdk."/>
               <span>openjdk / <b>jdk</b></span>
             </a>
           </li>
           <li>
-            <a href="/nginx/nginx?defaultBranch=master" class="rounded centered tabable gray">
-              <img src="https://avatars.githubusercontent.com/u/1412239?s=48&v=4" />
+            <a href="/nginx/nginx?defaultBranch=master" class="rounded centered tabable gray repo-card">
+              <img src="https://avatars.githubusercontent.com/u/1412239?s=48&v=4" alt="Avatar image for nginx nginx."/>
               <span>nginx / <b>nginx</b></span>
             </a>
           </li>
@@ -248,7 +250,10 @@
       </section>
     </main>
 
-    <main id="visualizer" style="display: none;" hidden></main>
+    <main id="visualizer" class="centered" style="display: none;" hidden>
+      <progress class="spinner"></progress>
+      <p id="error" style="display: none;"></p>
+    </main>
 
     <script type="module" src="./src/main.js"></script>
   </body>
