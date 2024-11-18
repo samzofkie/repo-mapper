@@ -58,7 +58,7 @@ export class LandingPage {
     if (res.status !== 200) {
       this.resultsAttempter.showError(
         ErrorLogger.httpsError(res.url, res.status)
-      )
+      );
 
     } else {
       const { items } = await res.json();

@@ -13,7 +13,7 @@ export class App {
       this.landingPage.show();
     } else {
       this.visualizer.show();
-      this.visualizer.begin();
+      this.visualizer.loadRepo();
     }
   }
 }
