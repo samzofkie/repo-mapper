@@ -1,10 +1,10 @@
-import { Hideable } from "./Hideable";
+//import { Hideable } from "./Hideable";
 import { debounce } from "./debounce";
 import { ErrorLogger } from "./ErrorLogger";
 
-export class LandingPage extends Hideable {
+export class LandingPage {
   constructor() {
-    super('#landing-page', 'flex', {doHidden: true});
+    this.main = document.querySelector('#landing-page');
     this.input = document.querySelector('#repo-search input');
     this.results = {
       container: document.querySelector('#repo-search div'),
@@ -17,7 +17,7 @@ export class LandingPage extends Hideable {
 
     this.debouncedMakeSearchRequest = debounce(
       () => this.makeSearchRequest.call(this),
-      500
+      1000
     );
 
     this.input.addEventListener(
@@ -27,8 +27,14 @@ export class LandingPage extends Hideable {
   }
 
   show() {
-    super.show();
+    this.main.style.display = '';
+    this.main.hidden = false;
     this.input.focus();
+  }
+
+  hide() {
+    this.main.style.display = 'none';
+    this.main.hidden = true;
   }
 
   showNothing() {
@@ -39,24 +45,24 @@ export class LandingPage extends Hideable {
   }
 
   showLoading() {
-    this.results.container.style.display = 'block';
-    this.results.spinner.style.display = 'block';
+    this.results.container.style.display = '';
+    this.results.spinner.style.display = '';
     this.results.error.style.display = 'none';
     this.results.list.style.display = 'none';
   }
 
   showError() {
-    this.results.container.style.display = 'block';
+    this.results.container.style.display = '';
     this.results.spinner.style.display = 'none';
-    this.results.error.style.display = 'block';
+    this.results.error.style.display = '';
     this.results.list.style.display = 'none';
   }
 
   showResults() {
-    this.results.container.style.display = 'block';
+    this.results.container.style.display = '';
     this.results.spinner.style.display = 'none';
     this.results.error.style.display = 'none';
-    this.results.list.style.display = 'flex';
+    this.results.list.style.display = '';
   }
 
   clearResults() {
