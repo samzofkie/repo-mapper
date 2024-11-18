@@ -1,33 +1,27 @@
 export class Hideable {
-  constructor(query, displayValue='block') {
+  constructor(
+    query, 
+    displayValue='block',
+    options={doHidden: false}
+  ) {
+    console.log(options);
     this.node = document.querySelector(query);
     this.displayValue = displayValue;
     this.visible = this.node.style.display === 'none';
+    this.doHidden = options.doHidden;
   }
 
   show() {
     this.node.style.display = this.displayValue;
     this.visible = true;
+    if (this.doHidden)
+      this.node.hidden = false;
   }
 
   hide() {
     this.node.style.display = 'none';
     this.visible = false;
-  }
-}
-
-export class HideableMain extends Hideable {
-  constructor(displayValue, query) {
-    super(displayValue, query);
-  }
-
-  show() {
-    super.show();
-    this.node.hidden = false;
-  }
-
-  hide() {
-    super.hide();
-    this.node.hidden = true;
+    if (this.doHidden)
+      this.node.hidden = true;
   }
 }

@@ -1,10 +1,10 @@
-import { HideableMain } from "./Hideable";
+import { Hideable } from "./Hideable";
 import { debounce } from "./debounce";
 import { ErrorLogger } from "./ErrorLogger";
 
-export class LandingPage extends HideableMain {
+export class LandingPage extends Hideable {
   constructor() {
-    super('#landing-page', 'flex');
+    super('#landing-page', 'flex', {doHidden: true});
     this.input = document.querySelector('#repo-search input');
     this.results = {
       container: document.querySelector('#repo-search div'),
