@@ -1,6 +1,8 @@
 - overall
   - favicon
   - footer with copyright
+  - could `Attemptor` set the children in `showResult()`?
+    - should `Attemptor`'s `result` variable be renamed to `results`?
 - landing page
   - routing ? (?)
   - re-examine UI design tbh

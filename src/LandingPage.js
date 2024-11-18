@@ -1,4 +1,4 @@
-//import { Hideable } from "./Hideable";
+import { Attempter } from "./Attempter";
 import { debounce } from "./debounce";
 import { ErrorLogger } from "./ErrorLogger";
 
@@ -6,14 +6,16 @@ export class LandingPage {
   constructor() {
     this.main = document.querySelector('#landing-page');
     this.input = document.querySelector('#repo-search input');
-    this.results = {
-      container: document.querySelector('#repo-search div'),
-      spinner: document.querySelector('#repo-search .spinner'),
-      error: document.querySelector('#repo-search #error'),
-      list: document.querySelector('#repo-search ol'),
-    };
+    
+    this.resultsList = document.querySelector('#repo-search ol');
 
-    this.showNothing();
+    this.resultsAttempter = new Attempter({
+      container: document.querySelector('#repo-search div'),
+      loader: document.querySelector('#repo-search .spinner'),
+      error: document.querySelector('#repo-search #error'),
+      result: document.querySelector('#repo-search ol'),
+    });
+    this.resultsAttempter.hide();
 
     this.debouncedMakeSearchRequest = debounce(
       () => this.makeSearchRequest.call(this),
@@ -37,57 +39,33 @@ export class LandingPage {
     this.main.hidden = true;
   }
 
-  showNothing() {
-    this.results.container.style.display = 'none';
-    this.results.spinner.style.display = 'none';
-    this.results.error.style.display = 'none';
-    this.results.list.style.display = 'none';
-  }
-
-  showLoading() {
-    this.results.container.style.display = '';
-    this.results.spinner.style.display = '';
-    this.results.error.style.display = 'none';
-    this.results.list.style.display = 'none';
-  }
-
-  showError() {
-    this.results.container.style.display = '';
-    this.results.spinner.style.display = 'none';
-    this.results.error.style.display = '';
-    this.results.list.style.display = 'none';
-  }
-
-  showResults() {
-    this.results.container.style.display = '';
-    this.results.spinner.style.display = 'none';
-    this.results.error.style.display = 'none';
-    this.results.list.style.display = '';
-  }
-
   clearResults() {
-    this.results.list.replaceChildren();
+    this.resultsList.replaceChildren();
   }
 
   // This method also has side effects in the UI-- either showing the 
   // #repo-search #results or the #repo-search #error
   async makeSearchRequest() {
     const term = encodeURIComponent(this.input.value);
+    
+    if (!term.length)
+      return;
+
     const url = `https://api.github.com/search/repositories?q=${term}`;
     console.log(`GET ${url}`);
     const res = await fetch(url);
 
     if (res.status !== 200) {
-      this.results.error.innerText = 
-          ErrorLogger.httpsError(res.url, res.status);
-      this.showError();
+      this.resultsAttempter.showError(
+        ErrorLogger.httpsError(res.url, res.status)
+      )
 
     } else {
       const { items } = await res.json();
-      this.results.list.append(
+      this.resultsList.append(
         ...items.map(this.createSearchResultsListItem)
       );
-      this.showResults();
+      this.resultsAttempter.showResult();
     }
   }
 
@@ -121,10 +99,10 @@ export class LandingPage {
     this.clearResults();
 
     if (event.target.value === '') {
-      this.showNothing();
+      this.resultsAttempter.hide();
 
     } else {
-      this.showLoading();
+      this.resultsAttempter.showLoading();
       this.debouncedMakeSearchRequest();
     }
   }
