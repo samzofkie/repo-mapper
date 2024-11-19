@@ -8,6 +8,7 @@ class VisualizerRequestError extends Error {}
 export class Visualizer {
   constructor() {
     this.main = document.querySelector('#visualizer');
+    this.result = document.querySelector('#visualizer #repo');
 
     this.repoAttempter = new Attempter({
       container: this.main,
@@ -32,19 +33,31 @@ export class Visualizer {
   async loadRepo() {
     this.repoAttempter.showLoading();
 
-    let owner, name, defaultBranch, flatTree, tree;
     try {
-      [owner, name] = Visualizer.parsePath();
-      defaultBranch = await Visualizer.getRepoDefaultBranch(owner, name);
+      let [owner, name] = Visualizer.parsePath();
+      let defaultBranch = await Visualizer.getRepoDefaultBranch(owner, name);
 
       owner = encodeURIComponent(owner);
       name = encodeURIComponent(name);
       defaultBranch = encodeURIComponent(defaultBranch);
 
-      flatTree = await Visualizer.getGitTree(owner, name, defaultBranch);
-      tree = Visualizer.buildTreeFromFlat(flatTree);
-      console.log(tree);
+      let flatTree = await Visualizer.getGitTree(owner, name, defaultBranch);
+      let tree = Visualizer.buildTreeFromFlat(flatTree);
 
+      const scalar = Visualizer.calculateSizeScalarFromTree(tree);
+      const diameter = Visualizer.getWindowSize();
+
+      Visualizer.setNodeSize(this.result, diameter);
+
+      const listItems = Visualizer.createRepoListItems(tree, scalar);
+      this.result.append(...listItems);
+
+      // TODO arrange in circle
+      this.result.append(
+        Visualizer.createDot(200, 200),
+      );
+
+      this.repoAttempter.showResult();
     } catch (error) {
       if (
         error instanceof VisualizerPathError ||
@@ -150,4 +163,78 @@ export class Visualizer {
     return tree;
   }
 
+  static getWindowSize() {
+    return Math.min(
+      window.innerHeight, 
+      window.innerWidth
+    );
+  }
+
+  static logScale(size, scalar) {
+    size = Math.log(size) * scalar;
+    size = Math.max(10, size);
+    size = Math.min(500, size);
+    return size;
+  }
+
+  static calculateDiameterFromScalar(tree, scalar) {
+    const sizes = tree.entries.map(
+      entry => Visualizer.logScale(entry.size, scalar)
+    );
+    const biggestEntrySize = Math.max(...sizes);
+    const circumference = sizes.reduce((acc, curr) => acc + curr, 0);
+    const diameter = circumference / Math.PI;
+    return diameter + biggestEntrySize;
+  }
+
+  static calculateSizeScalarFromTree(tree) {
+    const windowSize = Visualizer.getWindowSize();
+
+    let scalar = 1;
+    const PRECISION = 3;
+
+    for (let i=0; i<PRECISION; i++) {
+      const increment = 10 ** -i;
+      while (
+        Visualizer.calculateDiameterFromScalar(tree, scalar + increment) < windowSize
+      ) {
+        scalar += increment;
+      }
+    }
+    // Get around JavaScript imprecision creating lots of trailing 9s (like 
+    // 8.829999999 instead of 8.83)
+    scalar = Math.round(scalar * 10 ** (PRECISION - 1)) / 10 ** (PRECISION - 1);
+
+    return scalar;
+  }
+
+  static setNodeSize(node, size) {
+    node.style.width = `${size}px`;
+    node.style.height = `${size}px`;
+  }
+
+  static createRepoListItems(tree, scalar) {
+    return tree.entries.map(entry => {
+      const li = document.createElement('li');
+      li.className = `_2d-centered circular repo-entry ${entry.type}`;
+      li.innerText = entry.name;
+      Visualizer.setNodeSize(
+        li,
+        Visualizer.logScale(entry.size, scalar),
+      );
+
+      return li;
+    });      
+  }
+
+  static createDot(x, y, size=10) {
+    const dot = document.createElement('div');
+    dot.className = 'circular';
+    dot.style.position = 'absolute';
+    dot.style.backgroundColor = 'red';
+    Visualizer.setNodeSize(dot, size);
+    dot.style.left = `${x}px`;
+    dot.style.top = `${y}px`;
+    return dot;
+  }
 }

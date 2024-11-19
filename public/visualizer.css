@@ -1,0 +1,13 @@
+#repo .tree, #repo .blob {
+  position: absolute;
+}
+
+#repo .tree {
+  color: hsl(260 46% 15%);
+  background-color: hsl(223 54% 67%);
+}
+
+#repo .blob {
+  color: var(--gray-0);
+  background-color: var(--gray-7);
+}
