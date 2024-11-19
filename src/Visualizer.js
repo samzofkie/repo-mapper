@@ -50,13 +50,10 @@ export class Visualizer {
       Visualizer.setNodeSize(this.result, diameter);
 
       const listItems = Visualizer.createRepoListItems(tree, scalar);
+
+      Visualizer.arrangeListItemsInCircle(listItems, diameter);
+
       this.result.append(...listItems);
-
-      // TODO arrange in circle
-      this.result.append(
-        Visualizer.createDot(200, 200),
-      );
-
       this.repoAttempter.showResult();
     } catch (error) {
       if (
@@ -177,6 +174,7 @@ export class Visualizer {
     return size;
   }
 
+  // Returns tuple of total diameter and size of the largest elem in tree
   static calculateDiameterFromScalar(tree, scalar) {
     const sizes = tree.entries.map(
       entry => Visualizer.logScale(entry.size, scalar)
@@ -189,9 +187,9 @@ export class Visualizer {
 
   static calculateSizeScalarFromTree(tree) {
     const windowSize = Visualizer.getWindowSize();
-
-    let scalar = 1;
+    
     const PRECISION = 3;
+    let scalar = 1;
 
     for (let i=0; i<PRECISION; i++) {
       const increment = 10 ** -i;
@@ -211,6 +209,11 @@ export class Visualizer {
   static setNodeSize(node, size) {
     node.style.width = `${size}px`;
     node.style.height = `${size}px`;
+  }
+
+  static setNodePosition(node, x, y) {
+    node.style.left = `${x}px`;
+    node.style.top = `${y}px`;
   }
 
   static createRepoListItems(tree, scalar) {
@@ -233,8 +236,32 @@ export class Visualizer {
     dot.style.position = 'absolute';
     dot.style.backgroundColor = 'red';
     Visualizer.setNodeSize(dot, size);
-    dot.style.left = `${x}px`;
-    dot.style.top = `${y}px`;
+    Visualizer.setNodePosition(dot, x, y);
+    
     return dot;
+  }
+
+  static arrangeListItemsInCircle(listItems, diameter) {
+    const largestItemSize = Math.max(
+      ...listItems.map(item => Number(item.style.height.slice(0, -2)))
+    );
+    const radius = (diameter - largestItemSize) / 2
+    const totalSize = listItems.reduce(
+      (acc, curr) => acc + Number(curr.style.height.slice(0, -2)),
+      0
+    );
+    const raidiansPerPixel = 2 * Math.PI / totalSize;
+
+    let angle = 0;
+    for (let item of listItems) {
+      const size = Number(item.style.height.slice(0, -2));
+      angle += raidiansPerPixel * size / 2;
+      const point = {
+        x: diameter / 2 + radius * Math.sin(angle) - size / 2, 
+        y: diameter / 2 - radius * Math.cos(angle) - size / 2,
+      };
+      Visualizer.setNodePosition(item, point.x, point.y);
+      angle += raidiansPerPixel * size / 2;
+    }
   }
 }

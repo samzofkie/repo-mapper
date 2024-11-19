@@ -1,3 +1,7 @@
+#repo {
+  position: relative;
+}
+
 #repo .tree, #repo .blob {
   position: absolute;
 }
