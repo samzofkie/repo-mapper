@@ -32,7 +32,7 @@ export class Visualizer {
   async loadRepo() {
     this.repoAttempter.showLoading();
 
-    let owner, name, defaultBranch, flatTree;
+    let owner, name, defaultBranch, flatTree, tree;
     try {
       [owner, name] = Visualizer.parsePath();
       defaultBranch = await Visualizer.getRepoDefaultBranch(owner, name);
@@ -42,7 +42,8 @@ export class Visualizer {
       defaultBranch = encodeURIComponent(defaultBranch);
 
       flatTree = await Visualizer.getGitTree(owner, name, defaultBranch);
-      console.log(flatTree);
+      tree = Visualizer.buildTreeFromFlat(flatTree);
+      console.log(tree);
 
     } catch (error) {
       if (
@@ -97,6 +98,56 @@ export class Visualizer {
       const json = await res.json();
       return json.tree;
     }
+  }
+
+  static calculateTreeSizes(tree) {
+    for (let entry of tree.entries) {
+      if (entry.type === 'tree')
+        Visualizer.calculateTreeSizes(entry);
+      tree.size += entry.size;
+    }
+  }
+
+  static buildTreeFromFlat(flatTree) {
+    const tree = {
+      type: 'tree',
+      size: 0,
+      entries: [],
+    };
+
+    for (const entry of flatTree) {
+      const path = entry.path.split('/').slice(0, -1);
+      const [name] = entry.path.split('/').slice(-1);
+
+      // Navigate to spot in path
+      let spot = tree;
+      for (let stop of path)
+        spot = spot.entries.find(entry => entry.name === stop);
+      
+      // Insert info at spot
+      if (entry.type === 'tree') {
+        spot.entries.push({
+          name: name,
+          type: 'tree',
+          size: 0,
+          entries: [],
+        });
+      } else if (entry.type === 'blob') {
+        spot.entries.push({
+          name: name,
+          type: 'blob',
+          size: entry.size,
+        });
+      } else {
+        throw new Error(`Visualizer.buildTreeFromFlat() encountered unexpected entry type: "${entry.type}"`);
+      }
+    }
+
+    // Do a DFS to calculate cumulative sizes of trees based on blobs (modifies
+    // tree in-place)
+    Visualizer.calculateTreeSizes(tree);
+
+    return tree;
   }
 
 }
