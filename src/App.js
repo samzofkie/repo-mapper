@@ -8,12 +8,13 @@ export class App {
     this.visualizer = new Visualizer;
   }
 
-  init() {
+  async init() {
     if (window.location.pathname === '/') {
       this.landingPage.show();
     } else {
       this.visualizer.show();
-      this.visualizer.loadRepo();
+      await this.visualizer.loadRepo();
+      this.visualizer.drawCircle();
     }
   }
 }

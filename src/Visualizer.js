@@ -6,6 +6,9 @@ class VisualizerRequestError extends Error {}
 
 // The main *init* method is `loadRepo()`.
 export class Visualizer {
+  static ENTRY_SPACING = 5;
+  static SCALAR_PRECISION = 3;
+
   constructor() {
     this.main = document.querySelector('#visualizer');
     this.result = document.querySelector('#visualizer #repo');
@@ -42,19 +45,7 @@ export class Visualizer {
       defaultBranch = encodeURIComponent(defaultBranch);
 
       let flatTree = await Visualizer.getGitTree(owner, name, defaultBranch);
-      let tree = Visualizer.buildTreeFromFlat(flatTree);
-
-      const scalar = Visualizer.calculateSizeScalarFromTree(tree);
-      const diameter = Visualizer.getWindowSize();
-
-      Visualizer.setNodeSize(this.result, diameter);
-
-      const listItems = Visualizer.createRepoListItems(tree, scalar);
-
-      Visualizer.arrangeListItemsInCircle(listItems, diameter);
-
-      this.result.append(...listItems);
-      this.repoAttempter.showResult();
+      this.tree = Visualizer.buildTreeFromFlat(flatTree);
     } catch (error) {
       if (
         error instanceof VisualizerPathError ||
@@ -65,6 +56,30 @@ export class Visualizer {
       } else
         throw error;
     }
+  }
+
+  drawCircle() {
+    const entries = Visualizer.getScaledEntries(this.tree);
+    const diameter = Visualizer.calculateDiameterFromEntries(entries);
+    const padding = entries.reduce(
+      (acc, curr) => curr.scaledSize > acc.scaledSize ? curr : acc,
+      entries[0]
+    ).scaledSize / 2;
+
+    console.log(entries, diameter, padding);
+
+
+    /*const scalar = Visualizer.calculateSizeScalarFromTree(this.tree);
+    const diameter = Visualizer.getWindowSize();
+
+    Visualizer.setNodeSize(this.result, diameter);
+
+    const listItems = Visualizer.createRepoListItems(this.tree, scalar);
+
+    Visualizer.arrangeListItemsInCircle(listItems, diameter);
+
+    this.result.append(...listItems);
+    this.repoAttempter.showResult();*/
   }
 
   static parsePath() {
@@ -174,36 +189,57 @@ export class Visualizer {
     return size;
   }
 
-  // Returns tuple of total diameter and size of the largest elem in tree
-  static calculateDiameterFromScalar(tree, scalar) {
-    const sizes = tree.entries.map(
-      entry => Visualizer.logScale(entry.size, scalar)
-    );
-    const biggestEntrySize = Math.max(...sizes);
-    const circumference = sizes.reduce((acc, curr) => acc + curr, 0);
-    const diameter = circumference / Math.PI;
-    return diameter + biggestEntrySize;
+  static scaleEntries(entries, scalar) {
+    return entries.map(entry => ({
+      ...entry,
+      scaledSize: Visualizer.logScale(entry.size, scalar),
+    }));
   }
 
-  static calculateSizeScalarFromTree(tree) {
-    const windowSize = Visualizer.getWindowSize();
+  static calculateDiameterFromEntries(entries) {
+    let circumference = entries.reduce(
+      (acc, curr) => acc + curr.scaledSize,
+      0
+    ) + entries.length * Visualizer.ENTRY_SPACING;
     
-    const PRECISION = 3;
-    let scalar = 1;
+    return circumference / Math.PI;
+  }
 
-    for (let i=0; i<PRECISION; i++) {
+  static getScaledEntries(tree) {
+    let entries = tree.entries.map(entry => ({
+      name: entry.name,
+      type: entry.type,
+      size: entry.size,
+      scaledSize: 0,
+    }));
+
+    const windowSize = Visualizer.getWindowSize();
+
+    let scalar = 1;
+    for (let i = 0; i < Visualizer.SCALAR_PRECISION; i++) {
       const increment = 10 ** -i;
+
+      // This is confusing-- basically, this is so that scalar never gets 
+      // incremented to the point where the scaled entriess' diameter would
+      // be too big, so the while-loop conditional checks the value of the
+      // next result before it increments.
       while (
-        Visualizer.calculateDiameterFromScalar(tree, scalar + increment) < windowSize
+        Visualizer.calculateDiameterFromEntries(
+          Visualizer.scaleEntries(entries, scalar + increment)
+        ) < windowSize
       ) {
+        entries = Visualizer.scaleEntries(entries, scalar);
         scalar += increment;
       }
     }
+
     // Get around JavaScript imprecision creating lots of trailing 9s (like 
     // 8.829999999 instead of 8.83)
-    scalar = Math.round(scalar * 10 ** (PRECISION - 1)) / 10 ** (PRECISION - 1);
+    scalar = Math.round(
+      scalar * 10 ** (Visualizer.SCALAR_PRECISION - 1)
+    ) / 10 ** (Visualizer.SCALAR_PRECISION - 1);
 
-    return scalar;
+    return entries;
   }
 
   static setNodeSize(node, size) {
