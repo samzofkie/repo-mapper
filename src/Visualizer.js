@@ -61,25 +61,18 @@ export class Visualizer {
   drawCircle() {
     const entries = Visualizer.getScaledEntries(this.tree);
     const diameter = Visualizer.calculateDiameterFromEntries(entries);
-    const padding = entries.reduce(
-      (acc, curr) => curr.scaledSize > acc.scaledSize ? curr : acc,
-      entries[0]
-    ).scaledSize / 2;
+    const padding = Visualizer.getSizeOfLargestEntry(entries) / 2;
 
-    console.log(entries, diameter, padding);
+    const totalWidth = Visualizer.calculateTotalWidthFromEntries(entries);
+    Visualizer.setNodeSize(this.result, totalWidth, totalWidth);
 
-
-    /*const scalar = Visualizer.calculateSizeScalarFromTree(this.tree);
-    const diameter = Visualizer.getWindowSize();
-
-    Visualizer.setNodeSize(this.result, diameter);
-
-    const listItems = Visualizer.createRepoListItems(this.tree, scalar);
-
-    Visualizer.arrangeListItemsInCircle(listItems, diameter);
-
-    this.result.append(...listItems);
-    this.repoAttempter.showResult();*/
+    const listItemNodes = Visualizer.createListItemNodes(
+      entries, 
+      diameter,
+      padding,
+    );
+    this.result.append(...listItemNodes);
+    this.repoAttempter.showResult();
   }
 
   static parsePath() {
@@ -196,13 +189,27 @@ export class Visualizer {
     }));
   }
 
-  static calculateDiameterFromEntries(entries) {
-    let circumference = entries.reduce(
+  static calculateCircumferenceFromEntries(entries) {
+    return entries.reduce(
       (acc, curr) => acc + curr.scaledSize,
       0
     ) + entries.length * Visualizer.ENTRY_SPACING;
-    
-    return circumference / Math.PI;
+  }
+
+  static calculateDiameterFromEntries(entries) {
+    return Visualizer.calculateCircumferenceFromEntries(entries) / Math.PI;
+  }
+
+  static getSizeOfLargestEntry(entries) {
+    return entries.reduce(
+      (acc, curr) => curr.scaledSize > acc.scaledSize ? curr : acc,
+      entries[0]
+    ).scaledSize;
+  }
+
+  static calculateTotalWidthFromEntries(entries) {
+    return Visualizer.calculateDiameterFromEntries(entries) + 
+      Visualizer.getSizeOfLargestEntry(entries);
   }
 
   static getScaledEntries(tree) {
@@ -212,25 +219,20 @@ export class Visualizer {
       size: entry.size,
       scaledSize: 0,
     }));
-
     const windowSize = Visualizer.getWindowSize();
 
     let scalar = 1;
     for (let i = 0; i < Visualizer.SCALAR_PRECISION; i++) {
       const increment = 10 ** -i;
 
-      // This is confusing-- basically, this is so that scalar never gets 
-      // incremented to the point where the scaled entriess' diameter would
-      // be too big, so the while-loop conditional checks the value of the
-      // next result before it increments.
-      while (
-        Visualizer.calculateDiameterFromEntries(
-          Visualizer.scaleEntries(entries, scalar + increment)
-        ) < windowSize
-      ) {
+      let width;
+      do {
         entries = Visualizer.scaleEntries(entries, scalar);
         scalar += increment;
-      }
+        width = Visualizer.calculateTotalWidthFromEntries(
+          Visualizer.scaleEntries(entries, scalar + increment)
+        );
+      } while (width < windowSize)
     }
 
     // Get around JavaScript imprecision creating lots of trailing 9s (like 
@@ -252,52 +254,36 @@ export class Visualizer {
     node.style.top = `${y}px`;
   }
 
-  static createRepoListItems(tree, scalar) {
-    return tree.entries.map(entry => {
+  // This creates and sets the size and position of the list element nodes
+  static createListItemNodes(entries, diameter, padding) {
+    const listItemNodes = [];
+    const circumference = Visualizer.calculateCircumferenceFromEntries(entries);
+    const raidiansPerPixel = 2 * Math.PI / circumference;
+    const radius = diameter / 2;
+    const centerPoint = { 
+      x: padding + radius,
+      y: padding + radius
+    };
+
+    let angle = 0;
+    for (let entry of entries) {
       const li = document.createElement('li');
       li.className = `_2d-centered circular repo-entry ${entry.type}`;
       li.innerText = entry.name;
-      Visualizer.setNodeSize(
-        li,
-        Visualizer.logScale(entry.size, scalar),
-      );
+      Visualizer.setNodeSize(li, entry.scaledSize);
+      //li.style.fontSize = `${Visualizer.logScale(entry.size, 1)}px`;
 
-      return li;
-    });      
-  }
-
-  static createDot(x, y, size=10) {
-    const dot = document.createElement('div');
-    dot.className = 'circular';
-    dot.style.position = 'absolute';
-    dot.style.backgroundColor = 'red';
-    Visualizer.setNodeSize(dot, size);
-    Visualizer.setNodePosition(dot, x, y);
-    
-    return dot;
-  }
-
-  static arrangeListItemsInCircle(listItems, diameter) {
-    const largestItemSize = Math.max(
-      ...listItems.map(item => Number(item.style.height.slice(0, -2)))
-    );
-    const radius = (diameter - largestItemSize) / 2
-    const totalSize = listItems.reduce(
-      (acc, curr) => acc + Number(curr.style.height.slice(0, -2)),
-      0
-    );
-    const raidiansPerPixel = 2 * Math.PI / totalSize;
-
-    let angle = 0;
-    for (let item of listItems) {
-      const size = Number(item.style.height.slice(0, -2));
-      angle += raidiansPerPixel * size / 2;
+      angle += raidiansPerPixel * (entry.scaledSize + Visualizer.ENTRY_SPACING) / 2;
       const point = {
-        x: diameter / 2 + radius * Math.sin(angle) - size / 2, 
-        y: diameter / 2 - radius * Math.cos(angle) - size / 2,
+        x: centerPoint.x + radius * Math.sin(angle) - entry.scaledSize / 2,
+        y: centerPoint.y - radius * Math.cos(angle) - entry.scaledSize / 2,
       };
-      Visualizer.setNodePosition(item, point.x, point.y);
-      angle += raidiansPerPixel * size / 2;
+      Visualizer.setNodePosition(li, point.x, point.y);
+      angle += raidiansPerPixel * (entry.scaledSize + Visualizer.ENTRY_SPACING) / 2;
+
+      listItemNodes.push(li);
     }
+
+    return listItemNodes;
   }
 }

@@ -4,6 +4,7 @@
 
 #repo .tree, #repo .blob {
   position: absolute;
+  font-size: 10px;
 }
 
 #repo .tree {
