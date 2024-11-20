@@ -12,3 +12,4 @@
   - arrow keys for navigation
   - offline warning
 - visualization page
+  - font sizing / external labels

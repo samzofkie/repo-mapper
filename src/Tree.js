@@ -87,6 +87,7 @@ export class Tree {
       if (entry.type === 'tree') {
         spot.entries.push({
           name: name,
+          path: '/' + entry.path,
           type: 'tree',
           size: 0,
           entries: [],
@@ -94,6 +95,7 @@ export class Tree {
       } else if (entry.type === 'blob') {
         spot.entries.push({
           name: name,
+          path: '/' + entry.path,
           type: 'blob',
           size: entry.size,
         });
@@ -107,5 +109,33 @@ export class Tree {
     Tree.calculateTreeSizes(tree);
 
     return tree;
+  }
+
+  // "Mass" here is maybe misleading (?) What it means is the directory where
+  // the sum of it's direct (not in a subdirectory) blob children is greatest.
+  static calculateMassOfDirectory(entry) {
+    return entry.entries.reduce(
+      (acc, curr) => acc + (curr.type === 'blob' ? curr.size : 0),
+      0
+    );
+  }
+
+  static findDirectoryWithLargestMass(tree) {
+    let largestMass = tree;
+
+    for (let entry of tree.entries) {
+      if (entry.type === 'tree') {
+        let challenger = 
+          Tree.findDirectoryWithLargestMass(entry);
+        
+        if (
+          Tree.calculateMassOfDirectory(challenger) >
+          Tree.calculateMassOfDirectory(largestMass)
+        )
+          largestMass = challenger;
+      }
+    }
+
+    return largestMass;
   }
 }
