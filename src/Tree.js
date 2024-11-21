@@ -63,13 +63,14 @@ export class Tree {
     for (let entry of tree.entries) {
       if (entry.type === 'tree')
         Tree.calculateTreeSizes(entry);
-      tree.size += entry.size;
+      tree.bytes += entry.bytes;
     }
   }
 
   static buildTreeFromFlat(flatTree) {
     const tree = {
       type: 'tree',
+      bytes: 0,
       size: 0,
       entries: [],
     };
@@ -89,6 +90,7 @@ export class Tree {
           name: name,
           path: '/' + entry.path,
           type: 'tree',
+          bytes: 0,
           size: 0,
           entries: [],
         });
@@ -97,6 +99,7 @@ export class Tree {
           name: name,
           path: '/' + entry.path,
           type: 'blob',
+          bytes: entry.size,
           size: entry.size,
         });
       } else {
