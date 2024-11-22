@@ -14,7 +14,7 @@ export class App {
     } else {
       this.visualizer.show();
       await this.visualizer.loadRepo();
-      this.visualizer.drawCircle();
+      this.visualizer.drawRepo();
     }
   }
 }

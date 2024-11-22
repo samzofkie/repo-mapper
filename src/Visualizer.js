@@ -1,14 +1,15 @@
 import { Tree, TreePathError, TreeRequestError } from './Tree';
 import { Attempter } from './Attempter';
+import { BlobGaggle } from './BlobGaggle';
 
 
 // The main *init* method is `loadRepo()`.
 export class Visualizer {
-  static ENTRY_SPACING = 5;
-  static SCALAR_PRECISION = 3;
+  //static ENTRY_SPACING = 5;
+  //static SCALAR_PRECISION = 3;
 
   constructor() {
-    this.tree = new Tree;
+    this.tree = null;
 
     this.main = document.querySelector('#visualizer');
     this.result = document.querySelector('#visualizer #repo');
@@ -50,23 +51,6 @@ export class Visualizer {
     }
   }
 
-  drawCircle() {
-    const entries = Visualizer.getScaledEntries(this.tree);
-    const diameter = Visualizer.calculateDiameterFromEntries(entries);
-    const padding = Visualizer.getSizeOfLargestEntry(entries) / 2;
-
-    const totalWidth = Visualizer.calculateTotalWidthFromEntries(entries);
-    Visualizer.setNodeSize(this.result, totalWidth, totalWidth);
-
-    const listItemNodes = Visualizer.createListItemNodes(
-      entries, 
-      diameter,
-      padding,
-    );
-    this.result.append(...listItemNodes);
-    this.repoAttempter.showResult();
-  }
-
   static getWindowSize() {
     return Math.min(
       window.innerHeight, 
@@ -74,115 +58,43 @@ export class Visualizer {
     );
   }
 
-  static logScale(size, scalar) {
-    size = Math.log(size) * scalar;
-    size = Math.max(10, size);
-    size = Math.min(500, size);
-    return size;
-  }
+  drawRepo() {
+    const bg = new BlobGaggle(this.tree);
+    const diameter = Visualizer.getWindowSize();
+    const [scalar, rows] = bg.calculateScalarAndRows(diameter);
+    const blobs = bg.scaleBlobs(scalar);
 
-  static scaleEntries(entries, scalar) {
-    return entries.map(entry => ({
-      ...entry,
-      scaledSize: Visualizer.logScale(entry.size, scalar),
-    }));
-  }
+    const ol = document.createElement('ol');
+    ol.className = 'circular unstyled-list blob-gaggle';
+    ol.style.width = `${diameter}px`;
+    ol.style.height = `${diameter}px`;
 
-  static calculateCircumferenceFromEntries(entries) {
-    return entries.reduce(
-      (acc, curr) => acc + curr.scaledSize,
-      0
-    ) + entries.length * Visualizer.ENTRY_SPACING;
-  }
+    const rowDivs = rows.map(() => {
+      const div = document.createElement('div');
+      div.className = 'row';
+      return div;
+    });
+    ol.append(...rowDivs);
 
-  static calculateDiameterFromEntries(entries) {
-    return Visualizer.calculateCircumferenceFromEntries(entries) / Math.PI;
-  }
-
-  static getSizeOfLargestEntry(entries) {
-    return entries.reduce(
-      (acc, curr) => curr.scaledSize > acc.scaledSize ? curr : acc,
-      entries[0]
-    ).scaledSize;
-  }
-
-  static calculateTotalWidthFromEntries(entries) {
-    return Visualizer.calculateDiameterFromEntries(entries) + 
-      Visualizer.getSizeOfLargestEntry(entries);
-  }
-
-  static getScaledEntries(tree) {
-    let entries = tree.entries.map(entry => ({
-      name: entry.name,
-      type: entry.type,
-      size: entry.size,
-      scaledSize: 0,
-    }));
-    const windowSize = Visualizer.getWindowSize();
-
-    let scalar = 1;
-    for (let i = 0; i < Visualizer.SCALAR_PRECISION; i++) {
-      const increment = 10 ** -i;
-
-      let width;
-      do {
-        entries = Visualizer.scaleEntries(entries, scalar);
-        scalar += increment;
-        width = Visualizer.calculateTotalWidthFromEntries(
-          Visualizer.scaleEntries(entries, scalar + increment)
-        );
-      } while (width < windowSize)
-    }
-
-    // Get around JavaScript imprecision creating lots of trailing 9s (like 
-    // 8.829999999 instead of 8.83)
-    scalar = Math.round(
-      scalar * 10 ** (Visualizer.SCALAR_PRECISION - 1)
-    ) / 10 ** (Visualizer.SCALAR_PRECISION - 1);
-
-    return entries;
-  }
-
-  static setNodeSize(node, size) {
-    node.style.width = `${size}px`;
-    node.style.height = `${size}px`;
-  }
-
-  static setNodePosition(node, x, y) {
-    node.style.left = `${x}px`;
-    node.style.top = `${y}px`;
-  }
-
-  // This creates and sets the size and position of the list element nodes
-  static createListItemNodes(entries, diameter, padding) {
-    const listItemNodes = [];
-    const circumference = Visualizer.calculateCircumferenceFromEntries(entries);
-    const raidiansPerPixel = 2 * Math.PI / circumference;
-    const radius = diameter / 2;
-    const centerPoint = { 
-      x: padding + radius,
-      y: padding + radius
-    };
-
-    let angle = 0;
-    for (let entry of entries) {
+    const lis = blobs.map(blob => {
       const li = document.createElement('li');
-      li.className = `_2d-centered circular repo-entry ${entry.type}`;
-      li.innerText = entry.name;
-      Visualizer.setNodeSize(li, entry.scaledSize);
-      //li.style.fontSize = `${Visualizer.logScale(entry.size, 1)}px`;
+      li.className = 'circular gaggle-blob';
+      //li.innerText = blob.name;
+      li.style.width = `${blob.size}px`;
+      li.style.height = `${blob.size}px`;
+      return li;
+    });
 
-      angle += raidiansPerPixel * (entry.scaledSize + Visualizer.ENTRY_SPACING) / 2;
-      const point = {
-        x: centerPoint.x + radius * Math.sin(angle) - entry.scaledSize / 2,
-        y: centerPoint.y - radius * Math.cos(angle) - entry.scaledSize / 2,
-      };
-      Visualizer.setNodePosition(li, point.x, point.y);
-      angle += raidiansPerPixel * (entry.scaledSize + Visualizer.ENTRY_SPACING) / 2;
-
-      listItemNodes.push(li);
+    let start = 0, i=0;
+    for (let row of rows) {
+      rowDivs[i].append(
+        ...lis.slice(start, start + row)
+      );
+      start += row;
+      i++;
     }
 
-    return listItemNodes;
+    this.main.append(ol);
+    this.repoAttempter.showResult();
   }
 }
