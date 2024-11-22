@@ -1,13 +1,9 @@
 import { Tree, TreePathError, TreeRequestError } from './Tree';
 import { Attempter } from './Attempter';
 import { BlobGaggle } from './BlobGaggle';
+import { FontSizer } from './FontSizer';
 
-
-// The main *init* method is `loadRepo()`.
 export class Visualizer {
-  //static ENTRY_SPACING = 5;
-  //static SCALAR_PRECISION = 3;
-
   constructor() {
     this.tree = null;
 
@@ -78,8 +74,15 @@ export class Visualizer {
 
     const lis = blobs.map(blob => {
       const li = document.createElement('li');
-      li.className = 'circular gaggle-blob';
-      //li.innerText = blob.name;
+      li.className = '_2d-centered circular gaggle-blob';
+
+      const fontWidth = FontSizer.getTextWidth(
+        blob.name, 
+        FontSizer.getCanvasFont(li),
+      );
+      if (fontWidth < blob.size)
+        li.innerText = blob.name;
+      
       li.style.width = `${blob.size}px`;
       li.style.height = `${blob.size}px`;
       return li;
