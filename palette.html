@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="palette.css"/>
+    <link rel="stylesheet" href="langs.css"/>
+
+    <title>repographer.com</title>
+    <style>
+      @font-face {
+        font-family: "League Mono";
+        src: url("LeagueMono.woff2") format("woff2");
+      }
+
+      body {
+        background-color: var(--gray-0);
+        color: var(--gray-9);
+        font-family: "League Mono";
+      }
+
+      #langs {
+        display: flex;
+        flex-flow: row wrap;
+        gap: 10px;
+      }
+
+      #langs div {
+        height: 75px;
+        width: 75px;
+        border-radius: 50%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="langs"></div>
+    <script>
+      const container = document.getElementById('langs');
+      const langs = [
+        'c', 'cpp', 'c-sharp', 'java', 'python', 'javascript', 'ruby',
+        'visual-basic', 'go', 'sql', 'fortran', 'lisp', 'objective-c',
+        'object-pascal', 'php', 'matlab', 'rust', 'swift', 'scratch', 'r', 
+        'asm', 'kotlin', 'cobol', 'shell', 'prolog', 'sas', 'ada', 'perl',
+        'julia', 'scala', 'dart', 'lua', 'haskell', 'elixir', 'typescript',
+        'clojure', 'erlang', 'ocaml', 'smalltalk', 'scheme', 'zig',
+      ];
+
+      for (const lang of langs) {
+        const div = document.createElement('div');
+        div.className = lang;
+        div.innerText = lang;
+        container.append(div);
+      }
+    </script>
+  </body>
+</html>

@@ -12,4 +12,8 @@
   - arrow keys for navigation
   - offline warning
 - visualization page
-  - font sizing / external labels
+  - external labels (?)
+  - color based on source code
+  - zooming
+  - draw all blobs
+  - spacing within blob

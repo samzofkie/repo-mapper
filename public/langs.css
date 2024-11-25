@@ -1,0 +1,201 @@
+.c {
+  background-color: hsl(220 65% 62%);
+  color: hsl(220 65% 10%);
+}
+
+.cpp {
+  background-color: hsl(237 82% 64%);
+}
+
+.c-sharp {
+  background-color: hsl(265 79% 45%);
+  color: white;
+}
+
+.java {
+  background-color: hsl(214 43% 78%);
+  color: hsl(22 92% 42%);
+}
+
+.python {
+  background-color: hsl(50 75% 62%);
+  color: hsl(215 60% 38%);
+}
+
+.javascript {
+  background-color: hsl(52 86% 54%);
+  color: black;
+}
+
+.ruby {
+  background-color: hsl(352 98% 34%);
+  color: white;
+}
+
+.visual-basic {
+  background-color: hsl(228 47% 33%);
+}
+
+.go {
+  background-color: hsl(193 75% 47%);
+  color: black;
+}
+
+.sql {
+  background-color: hsl(117 50% 41%);
+}
+
+.fortran {
+  background-color: hsl(277 39% 39%);
+}
+
+.lisp {
+  background-color: white;
+  color: black;
+}
+
+.objective-c {
+  background-color: hsl(15 5% 85%);
+  color: hsl(18 100% 40%);
+}
+
+.object-pascal {
+  background-color: hsl(3 91% 21%);
+  color: white;
+}
+
+.php {
+  background-color: hsl(251 27% 43%);
+}
+
+.matlab {
+  background-color: hsl(19 100% 33%);
+  color: hsl(43 100% 74%);
+}
+
+.rust {
+  background-color: hsl(17 75% 47%);
+  color: hsl(242 2% 10%);
+}
+
+.swift {
+  background-color: hsl(20 77% 53%);
+  color: white;
+}
+
+.scratch {
+  background-color: hsl(35 91% 49%);
+  color: white;
+}
+
+.r {
+  background-color: hsl(209 3% 49%);
+  color: hsl(225 54% 24%);
+}
+
+.asm {
+  border: 1px solid white;
+  background-color: black;
+  color: white;
+}
+
+.kotlin {
+  background-color: hsl(265 76% 38%);
+  color: hsl(29 97% 65%);
+}
+
+.cobol {
+  color: hsl(0 74% 62%);
+  background-color: hsl(0 8% 17%);
+}
+
+.shell {
+  border: 1px solid hsl(105 80% 70%);
+  background-color: hsl(0 8% 5%);
+  color: hsl(105 80% 70%);
+}
+
+.prolog {
+  background-color: hsl(134 86% 18%);
+  color: white;
+}
+
+.sas {
+  background-color: hsl(233 40% 62%);
+  color: black;
+}
+
+.ada {
+  background-color: hsl(275 100% 36%);
+  color: white;
+}
+
+.perl {
+  background-color: hsl(198 67% 30%);
+  color: white;
+}
+
+.julia {
+  background-color: hsl(233 53% 34%);
+  color: hsl(129 71% 46%);
+}
+
+.scala {
+  background-color: hsl(0 71% 52%);
+  color: black;
+}
+
+.dart {
+  background-color: hsl(204 80% 70%);
+  color: hsl(233 80% 21%);
+}
+
+.lua {
+  background-color: hsl(233 100% 20%);
+  color: white;
+}
+
+.haskell {
+  background-color: hsl(296 100% 27%);
+  color: white;
+}
+
+.elixir {
+  background-color: hsl(279 39% 26%);
+  color: hsl(279 13% 78%);
+}
+
+.typescript {
+  background-color: hsl(221 65% 55%);
+  color: white;
+}
+
+.clojure {
+  background-color: hsl(111 65% 25%);
+  color: hsl(200 100% 65%);
+}
+
+.erlang {
+  background-color: hsl(337 90% 31%);
+  color: white;
+}
+
+.ocaml {
+  background-color: hsl(21 100% 54%);
+  color: white;
+}
+
+.smalltalk {
+  background-color: hsl(296 83% 65%);
+  color: hsl(360 100% 44%);
+}
+
+.scheme {
+  background-color: hsl(360 100% 46%);
+  color: hsl(246 100% 34%);
+}
+
+.zig {
+  background-color: hsl(35 91% 49%);
+  color: black;
+}
