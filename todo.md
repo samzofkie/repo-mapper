@@ -12,7 +12,7 @@
   - arrow keys for navigation
   - offline warning
 - visualization page
-  - external labels (?)
+  - contemplate how to label small files
   - color based on source code
   - zooming
   - draw all blobs

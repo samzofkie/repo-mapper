@@ -2,6 +2,7 @@ import { Tree, TreePathError, TreeRequestError } from './Tree';
 import { Attempter } from './Attempter';
 import { BlobGaggle } from './BlobGaggle';
 import { FontSizer } from './FontSizer';
+import { langMap } from './langMap';
 
 export class Visualizer {
   constructor() {
@@ -55,7 +56,12 @@ export class Visualizer {
   }
 
   drawRepo() {
-    const bg = new BlobGaggle(this.tree);
+    let dir = this.tree
+      .entries.find(e => e.name === 'packages')
+      .entries.find(e => e.name === 'react-client')
+      .entries.find(e => e.name === 'src');
+    console.log(dir.entries.filter(e => e.type === 'tree'));
+    const bg = new BlobGaggle(dir);
     const diameter = Visualizer.getWindowSize();
     const [scalar, rows] = bg.calculateScalarAndRows(diameter);
     const blobs = bg.scaleBlobs(scalar);
@@ -74,8 +80,12 @@ export class Visualizer {
 
     const lis = blobs.map(blob => {
       const li = document.createElement('li');
-      li.className = '_2d-centered circular gaggle-blob';
+      li.className = `_2d-centered circular gaggle-blob`;
 
+      const extension = blob.name.split('.').slice(-1)[0];
+      if (langMap.has(extension))
+        li.className += ` ${langMap.get(extension)}`;
+      
       const fontWidth = FontSizer.getTextWidth(
         blob.name, 
         FontSizer.getCanvasFont(li),

@@ -30,7 +30,7 @@
 }
 
 .gaggle-blob {
-  color: hsl(260 46% 15%);
-  background-color: hsl(223 54% 67%);
+  color: var(--gray-0);
+  background-color: var(--gray-7);
   font-size: var(--size-0);
 }
