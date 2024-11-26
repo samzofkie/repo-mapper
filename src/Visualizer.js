@@ -55,16 +55,19 @@ export class Visualizer {
     );
   }
 
-  drawRepo() {
-    let dir = this.tree
-      .entries.find(e => e.name === 'packages')
-      .entries.find(e => e.name === 'react-client')
-      .entries.find(e => e.name === 'src');
-    console.log(dir.entries.filter(e => e.type === 'tree'));
-    const bg = new BlobGaggle(dir);
+  calculateRepoScalar() {
+    const largestDir = Tree.findDirectoryWithLargestMass(this.tree);
+    const largestBg = new BlobGaggle(largestDir);
     const diameter = Visualizer.getWindowSize();
-    const [scalar, rows] = bg.calculateScalarAndRows(diameter);
-    const blobs = bg.scaleBlobs(scalar);
+    const [scalar, _] = largestBg.calculateScalarAndRows(diameter);
+    return scalar;
+  }
+
+  drawRepo() {
+    const repoScalar = this.calculateRepoScalar();
+    const bg = new BlobGaggle(this.tree);
+    const [diameter, rows] = bg.calculateDiameterAndRows(repoScalar);
+    const blobs = bg.scaleBlobs(repoScalar);
 
     const ol = document.createElement('ol');
     ol.className = 'circular unstyled-list blob-gaggle';
@@ -81,6 +84,7 @@ export class Visualizer {
     const lis = blobs.map(blob => {
       const li = document.createElement('li');
       li.className = `_2d-centered circular gaggle-blob`;
+      li.id = blob.name;
 
       const extension = blob.name.split('.').slice(-1)[0];
       if (langMap.has(extension))

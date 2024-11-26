@@ -33,7 +33,7 @@ export class BlobGaggle {
   // )
   calculateScalarAndRows(diameter) {
     let precision = 5;
-    let scalar=0, blobs, solution;
+    let scalar = 0, blobs, solution;
 
     for (let i=-100; i<precision; i++) {
       let inc = 10**-i;
@@ -55,6 +55,35 @@ export class BlobGaggle {
 
     return [
       scalar, 
+      solution.map(sizes => sizes.length),
+    ];
+  }
+
+  calculateDiameterAndRows(scalar) {
+    let diameter = 0;
+    let blobs = this.scaleBlobs(scalar);
+    let solution;
+
+    // Try to packIntoRows until they actually fit, then go to next increment
+    for (let i=10; i>=0; i--) {
+      let inc = 10**i;
+      solution = Circle.packIntoRows(diameter + inc, blobs.map(blob => blob.size));
+      let iters = 0;
+      while(solution === null) {
+        diameter += inc;
+        solution = Circle.packIntoRows(diameter + inc, blobs.map(blob => blob.size));
+        if (++iters > 10) {
+          console.error('BlobGaggle.calculateDiameterAndRows() hit MAX_ITERS!');
+          break;
+        }
+      }
+    }
+    diameter++;
+
+    solution = Circle.packIntoRows(diameter, blobs.map(blob => blob.size));
+
+    return [
+      diameter,
       solution.map(sizes => sizes.length),
     ];
   }
