@@ -69,6 +69,7 @@ export class Tree {
 
   static buildTreeFromFlat(flatTree) {
     const tree = {
+      path: '/',
       type: 'tree',
       bytes: 0,
       size: 0,

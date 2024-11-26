@@ -63,11 +63,12 @@ export class Visualizer {
     return scalar;
   }
 
-  drawRepo() {
-    const repoScalar = this.calculateRepoScalar();
-    const bg = new BlobGaggle(this.tree);
-    const [diameter, rows] = bg.calculateDiameterAndRows(repoScalar);
-    const blobs = bg.scaleBlobs(repoScalar);
+  // Takes an object from this.tree representing a directory, and outputs a
+  // fully drawn and correctly scaled <ol>, populated with blobs
+  static drawGaggle(dir, repoScalar) {
+    const gaggle = new BlobGaggle(dir);
+    const blobs = gaggle.scaleBlobs(repoScalar);
+    const [diameter, rows] = gaggle.calculateDiameterAndRows(repoScalar);
 
     const ol = document.createElement('ol');
     ol.className = 'circular unstyled-list blob-gaggle';
@@ -84,7 +85,6 @@ export class Visualizer {
     const lis = blobs.map(blob => {
       const li = document.createElement('li');
       li.className = `_2d-centered circular gaggle-blob`;
-      li.id = blob.name;
 
       const extension = blob.name.split('.').slice(-1)[0];
       if (langMap.has(extension))
@@ -111,7 +111,27 @@ export class Visualizer {
       i++;
     }
 
-    this.main.append(ol);
+    return ol;
+  }
+
+  drawRepo() {
+    const repoScalar = this.calculateRepoScalar();
+
+    console.time('test');
+    const queue = [this.tree];
+    while (queue.length > 0) {
+      const dir = queue.pop();
+
+      const ol = Visualizer.drawGaggle(dir, repoScalar);
+      this.main.append(ol);
+      
+      for (const entry of dir.entries) {
+        if (entry.type === 'tree')
+          queue.push(entry);
+      }
+    }
+    console.timeEnd('test');
+
     this.repoAttempter.showResult();
   }
 }
